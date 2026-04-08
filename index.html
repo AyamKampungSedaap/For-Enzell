@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You 💖</title>
 
-<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -29,7 +28,6 @@ body {
     align-items: center;
 }
 
-/* CHARACTER */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
@@ -45,7 +43,6 @@ h2 {
     font-size: 22px;
 }
 
-/* BUTTON */
 .buttons {
     margin-top: 20px;
     display: flex;
@@ -70,7 +67,6 @@ button {
     color: white;
 }
 
-/* TEXT */
 .text {
     display: none;
     margin-top: 20px;
@@ -79,13 +75,12 @@ button {
     line-height: 1.6;
 }
 
-/* typing smooth + spacing FIX */
 .word {
     opacity: 0;
     transform: translateY(10px);
     display: inline-block;
-    animation: fadeWord 0.4s forwards;
-    margin-right: 6px; /* 🔥 FIX SPASI */
+    animation: fadeWord 0.5s forwards;
+    margin-right: 6px;
 }
 
 @keyframes fadeWord {
@@ -95,14 +90,12 @@ button {
     }
 }
 
-/* BUTTON 2 */
 .buttons2 {
     display: none;
     margin-top: 15px;
     gap: 10px;
 }
 
-/* MOBILE */
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
     h2 { font-size: 18px; }
@@ -113,7 +106,8 @@ button {
 
 <body>
 
-<audio id="bgMusic" src="tptoe.mp3" preload="auto" loop></audio>
+<!-- 🎵 NAMA FILE SUDAH FIX -->
+<audio id="bgMusic" src="HYBS - TipToe (Official Video).mp3" preload="auto" loop></audio>
 
 <div class="container">
 
@@ -141,13 +135,12 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-// 🔥 AUDIO FIX (PASTI JALAN)
+// 🎵 AUDIO FIX
 function playMusic() {
     music.load();
     music.volume = 0.5;
 
     let playPromise = music.play();
-
     if (playPromise !== undefined) {
         playPromise.catch(() => {
             document.addEventListener("click", () => {
@@ -157,8 +150,8 @@ function playMusic() {
     }
 }
 
-// ✨ TYPING SMOOTH (FIX SPASI)
-function typeWordsSmooth(element, text, delay = 150) {
+// ✨ TYPING LEBIH PELAN
+function typeWordsSmooth(element, text, delay = 250) {
     element.style.display = "block";
     element.innerHTML = "";
 
@@ -167,12 +160,12 @@ function typeWordsSmooth(element, text, delay = 150) {
         const span = document.createElement("span");
         span.classList.add("word");
         span.style.animationDelay = (i * delay) + "ms";
-        span.textContent = word; // 🔥 FIX SPASI (bukan innerHTML)
+        span.textContent = word;
         element.appendChild(span);
     });
 }
 
-// 😈 NO BUTTON TELEPORT
+// 😈 NO TELEPORT
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
@@ -192,7 +185,6 @@ function antiClick(btn) {
 
 antiClick(document.getElementById("no1"));
 
-// FLOW
 document.getElementById("yes1").onclick = () => {
 
     playMusic();
@@ -210,15 +202,14 @@ document.getElementById("yes1").onclick = () => {
             document.getElementById("msg2"),
             "i have something else, wanna see?"
         );
-    }, 2500);
+    }, 3500);
 
     setTimeout(() => {
         document.getElementById("btn2").style.display = "flex";
         antiClick(document.getElementById("no2"));
-    }, 4500);
+    }, 6000);
 };
 
-// YES kedua
 document.getElementById("yes2").onclick = () => {
     document.getElementById("btn2").style.display = "none";
 
