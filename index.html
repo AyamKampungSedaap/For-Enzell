@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💖</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+}
+
+.characters {
+    font-size: 80px;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+h2 {
+    margin-top: 20px;
+    color: #d63384;
+}
+
+.buttons {
+    margin-top: 20px;
+    position: relative;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+#yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+}
+
+#noBtn {
+    background-color: #aaa;
+    color: white;
+    position: absolute;
+}
+
+.message {
+    display: none;
+    font-size: 22px;
+    color: #ff2e63;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 AUDIO -->
+<audio id="bgMusic" src="tptoe.mp3" loop></audio>
+
+<div class="container">
+    <div class="characters">🐻💖🐰</div>
+
+    <h2 id="question">i have something to say for you, are you ready?</h2>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+
+    <div class="message" id="message">
+        you’re the prettiest, smartest, cuttest girl i’ve seen i love you ❤️
+    </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("message");
+const question = document.getElementById("question");
+const music = document.getElementById("bgMusic");
+
+// 🎵 coba autoplay
+window.addEventListener("load", () => {
+    music.play().catch(() => {
+        console.log("Autoplay diblok, tunggu interaksi user...");
+    });
+});
+
+// fallback kalau autoplay diblok → klik layar baru jalan
+document.body.addEventListener("click", () => {
+    if (music.paused) {
+        music.play();
+    }
+});
+
+// tombol NO kabur
+noBtn.addEventListener("mouseover", () => {
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+});
+
+// tombol YES
+yesBtn.addEventListener("click", () => {
+    question.style.display = "none";
+    noBtn.style.display = "none";
+    yesBtn.style.display = "none";
+    message.style.display = "block";
+});
+</script>
+
+</body>
+</html>
