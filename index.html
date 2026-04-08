@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +19,7 @@ body {
     background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
 }
 
-/* CENTER FIX */
+/* CENTER */
 .container {
     text-align: center;
     display: flex;
@@ -28,6 +27,7 @@ body {
     align-items: center;
 }
 
+/* CHARACTER */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
@@ -69,7 +69,7 @@ button {
     position: relative;
 }
 
-/* TEXT 1 (slow dari kanan) */
+/* TEXT 1 */
 .message1 {
     display: none;
     margin-top: 25px;
@@ -95,7 +95,7 @@ button {
     }
 }
 
-/* TEXT 2 (dari kiri) */
+/* TEXT 2 */
 .message2 {
     display: none;
     margin-top: 15px;
@@ -121,7 +121,7 @@ button {
     }
 }
 
-/* BUTTON 2 (dari bawah) */
+/* BUTTON 2 */
 .buttons2 {
     display: none;
     margin-top: 15px;
@@ -169,17 +169,14 @@ button {
         <button class="no" id="no1">No</button>
     </div>
 
-    <!-- TEXT 1 -->
     <div class="message1" id="msg1">
         you’re the prettiest, smartest, cuttest girl i’ve seen i love you ❤️
     </div>
 
-    <!-- TEXT 2 -->
     <div class="message2" id="msg2">
         i have something else
     </div>
 
-    <!-- BUTTON 2 -->
     <div class="buttons2" id="btn2">
         <button class="yes" id="yes2">Yes</button>
         <button class="no" id="no2">No</button>
@@ -195,22 +192,32 @@ document.addEventListener("click", () => {
     if (music.paused) music.play();
 }, { once: true });
 
-// tombol no kabur function
+// 😈 FUNCTION KABUR FIX TOTAL
 function kabur(btn) {
-    btn.addEventListener("mouseover", () => {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 50);
+    function move() {
+        const btnWidth = btn.offsetWidth;
+        const btnHeight = btn.offsetHeight;
+
+        const maxX = window.innerWidth - btnWidth;
+        const maxY = window.innerHeight - btnHeight;
+
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+
         btn.style.position = "fixed";
         btn.style.left = x + "px";
         btn.style.top = y + "px";
-    });
+    }
+
+    btn.addEventListener("mouseover", move);
+    btn.addEventListener("mousedown", move);
+    btn.addEventListener("touchstart", move);
 }
 
-// aktifin no pertama & kedua
+// aktifin NO pertama
 kabur(document.getElementById("no1"));
-kabur(document.getElementById("no2"));
 
-// flow utama
+// FLOW
 document.getElementById("yes1").onclick = () => {
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
@@ -218,22 +225,22 @@ document.getElementById("yes1").onclick = () => {
     const msg1 = document.getElementById("msg1");
     msg1.classList.add("show1");
 
-    // muncul text kedua
     setTimeout(() => {
-        const msg2 = document.getElementById("msg2");
-        msg2.classList.add("show2");
+        document.getElementById("msg2").classList.add("show2");
     }, 2500);
 
-    // muncul tombol kedua
     setTimeout(() => {
         const btn2 = document.getElementById("btn2");
         btn2.classList.add("show3");
+
+        // 🔥 FIX UTAMA: aktifin kabur SETELAH muncul
+        kabur(document.getElementById("no2"));
     }, 4000);
 };
 
-// tombol yes kedua (bebas mau lanjut apa 😏)
+// tombol yes kedua
 document.getElementById("yes2").onclick = () => {
-    alert("nah ini tinggal kamu isi endingnya 😏💖");
+    alert("You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you💖");
 };
 </script>
 
