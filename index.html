@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You 💖</title>
 
-<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
@@ -22,7 +21,6 @@ body {
     background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
 }
 
-/* CENTER */
 .container {
     text-align: center;
     display: flex;
@@ -30,7 +28,6 @@ body {
     align-items: center;
 }
 
-/* CHARACTER */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
@@ -46,7 +43,6 @@ h2 {
     font-size: 24px;
 }
 
-/* BUTTON */
 .buttons {
     margin-top: 20px;
     display: flex;
@@ -72,56 +68,18 @@ button {
     color: white;
 }
 
-/* TEXT 1 */
-.message1 {
+/* TEXT */
+.text {
     display: none;
-    margin-top: 25px;
+    margin-top: 20px;
     font-size: 26px;
     color: #ff2e63;
     opacity: 0;
-    transform: translateX(200px);
 }
 
-.show1 {
+.show {
     display: block;
-    animation: slideRight 3s ease forwards;
-}
-
-@keyframes slideRight {
-    from {
-        opacity: 0;
-        transform: translateX(200px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* TEXT 2 */
-.message2 {
-    display: none;
-    margin-top: 15px;
-    font-size: 24px;
-    color: #d63384;
-    opacity: 0;
-    transform: translateX(-150px);
-}
-
-.show2 {
-    display: block;
-    animation: slideLeft 2s ease forwards;
-}
-
-@keyframes slideLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-150px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    opacity: 1;
 }
 
 /* BUTTON 2 */
@@ -129,58 +87,17 @@ button {
     display: none;
     margin-top: 15px;
     gap: 10px;
-    opacity: 0;
-    transform: translateY(100px);
 }
 
-.show3 {
+.showBtn {
     display: flex;
-    animation: slideUp 1.5s ease forwards;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ENDING */
-.message3 {
-    display: none;
-    margin-top: 20px;
-    font-size: 26px;
-    color: #ff2e63;
-    opacity: 0;
-    transform: translateX(150px);
-}
-
-.show4 {
-    display: block;
-    animation: slideRight2 2.5s ease forwards;
-}
-
-@keyframes slideRight2 {
-    from {
-        opacity: 0;
-        transform: translateX(150px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 /* MOBILE */
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
     h2 { font-size: 20px; }
-    .message1, .message2, .message3 { font-size: 20px; }
-    button { font-size: 14px; }
+    .text { font-size: 20px; }
 }
 </style>
 </head>
@@ -200,47 +117,47 @@ button {
         <button class="no" id="no1">No</button>
     </div>
 
-    <div class="message1" id="msg1">
-        you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️
-    </div>
-
-    <div class="message2" id="msg2">
-        i have something else, wanna see?
-    </div>
+    <div class="text" id="msg1"></div>
+    <div class="text" id="msg2"></div>
 
     <div class="buttons2" id="btn2">
         <button class="yes" id="yes2">Yes</button>
         <button class="no" id="no2">No</button>
     </div>
 
-    <div class="message3" id="msg3">
-        You're amazing babe, you've done your best and im proud of you. 
-        Keep it up pwitiee, i'll always be there for you 💖
-    </div>
+    <div class="text" id="msg3"></div>
 
 </div>
 
 <script>
 const music = document.getElementById("bgMusic");
 
-// autoplay fallback
-document.addEventListener("click", () => {
-    if (music.paused) music.play();
-}, { once: true });
+// 🎯 typing per kata
+function typeWords(element, text, speed = 200) {
+    element.innerHTML = "";
+    element.classList.add("show");
 
-// tombol NO pindah saat diklik
+    const words = text.split(" ");
+    let i = 0;
+
+    function addWord() {
+        if (i < words.length) {
+            element.innerHTML += words[i] + " ";
+            i++;
+            setTimeout(addWord, speed);
+        }
+    }
+
+    addWord();
+}
+
+// 😈 tombol NO teleport
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
 
-        const btnWidth = btn.offsetWidth;
-        const btnHeight = btn.offsetHeight;
-
-        const maxX = window.innerWidth - btnWidth;
-        const maxY = window.innerHeight - btnHeight;
-
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
 
         btn.style.position = "fixed";
         btn.style.left = x + "px";
@@ -257,27 +174,46 @@ antiClick(document.getElementById("no1"));
 
 // FLOW
 document.getElementById("yes1").onclick = () => {
+
+    // 🎵 play music
+    music.volume = 0.5;
+    music.play();
+
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
-    document.getElementById("msg1").classList.add("show1");
+    // TEXT 1
+    typeWords(
+        document.getElementById("msg1"),
+        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️",
+        180
+    );
 
+    // TEXT 2
     setTimeout(() => {
-        document.getElementById("msg2").classList.add("show2");
-    }, 2500);
+        typeWords(
+            document.getElementById("msg2"),
+            "i have something else, wanna see?",
+            180
+        );
+    }, 3000);
 
+    // tombol kedua
     setTimeout(() => {
-        const btn2 = document.getElementById("btn2");
-        btn2.classList.add("show3");
-
+        document.getElementById("btn2").classList.add("showBtn");
         antiClick(document.getElementById("no2"));
-    }, 4000);
+    }, 5000);
 };
 
 // YES kedua
 document.getElementById("yes2").onclick = () => {
     document.getElementById("btn2").style.display = "none";
-    document.getElementById("msg3").classList.add("show4");
+
+    typeWords(
+        document.getElementById("msg3"),
+        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖",
+        160
+    );
 };
 </script>
 
