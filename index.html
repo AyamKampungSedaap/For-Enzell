@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You 💖</title>
 
-<!-- FONT PLAYFAIR -->
+<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -76,14 +76,16 @@ button {
     margin-top: 20px;
     font-size: 22px;
     color: #ff2e63;
+    line-height: 1.6;
 }
 
-/* typing smooth */
+/* typing smooth + spacing FIX */
 .word {
     opacity: 0;
     transform: translateY(10px);
     display: inline-block;
     animation: fadeWord 0.4s forwards;
+    margin-right: 6px; /* 🔥 FIX SPASI */
 }
 
 @keyframes fadeWord {
@@ -139,12 +141,12 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-// 🎵 FIX AUDIO (SUPER AMAN)
+// 🔥 AUDIO FIX (PASTI JALAN)
 function playMusic() {
     music.load();
     music.volume = 0.5;
 
-    const playPromise = music.play();
+    let playPromise = music.play();
 
     if (playPromise !== undefined) {
         playPromise.catch(() => {
@@ -155,8 +157,8 @@ function playMusic() {
     }
 }
 
-// ✨ typing smooth per kata (ga kaku)
-function typeWordsSmooth(element, text, delay = 200) {
+// ✨ TYPING SMOOTH (FIX SPASI)
+function typeWordsSmooth(element, text, delay = 150) {
     element.style.display = "block";
     element.innerHTML = "";
 
@@ -165,12 +167,12 @@ function typeWordsSmooth(element, text, delay = 200) {
         const span = document.createElement("span");
         span.classList.add("word");
         span.style.animationDelay = (i * delay) + "ms";
-        span.innerHTML = word + " ";
+        span.textContent = word; // 🔥 FIX SPASI (bukan innerHTML)
         element.appendChild(span);
     });
 }
 
-// 😈 tombol NO teleport
+// 😈 NO BUTTON TELEPORT
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
@@ -193,22 +195,20 @@ antiClick(document.getElementById("no1"));
 // FLOW
 document.getElementById("yes1").onclick = () => {
 
-    playMusic(); // 🔥 FIX AUDIO
+    playMusic();
 
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
     typeWordsSmooth(
         document.getElementById("msg1"),
-        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️",
-        150
+        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️"
     );
 
     setTimeout(() => {
         typeWordsSmooth(
             document.getElementById("msg2"),
-            "i have something else, wanna see?",
-            150
+            "i have something else, wanna see?"
         );
     }, 2500);
 
@@ -224,8 +224,7 @@ document.getElementById("yes2").onclick = () => {
 
     typeWordsSmooth(
         document.getElementById("msg3"),
-        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖",
-        140
+        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
     );
 };
 </script>
