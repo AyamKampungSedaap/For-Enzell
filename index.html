@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For You 💖</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<!-- FONT PLAYFAIR -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 html, body {
@@ -17,7 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Great Vibes', cursive;
+    font-family: 'Playfair Display', serif;
     background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
 }
 
@@ -28,6 +29,7 @@ body {
     align-items: center;
 }
 
+/* CHARACTER */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
@@ -40,9 +42,10 @@ body {
 
 h2 {
     color: #d63384;
-    font-size: 24px;
+    font-size: 22px;
 }
 
+/* BUTTON */
 .buttons {
     margin-top: 20px;
     display: flex;
@@ -51,11 +54,10 @@ h2 {
 
 button {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 15px;
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    font-family: Arial, sans-serif;
 }
 
 .yes {
@@ -72,14 +74,23 @@ button {
 .text {
     display: none;
     margin-top: 20px;
-    font-size: 26px;
+    font-size: 22px;
     color: #ff2e63;
-    opacity: 0;
 }
 
-.show {
-    display: block;
-    opacity: 1;
+/* typing smooth */
+.word {
+    opacity: 0;
+    transform: translateY(10px);
+    display: inline-block;
+    animation: fadeWord 0.4s forwards;
+}
+
+@keyframes fadeWord {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* BUTTON 2 */
@@ -89,22 +100,18 @@ button {
     gap: 10px;
 }
 
-.showBtn {
-    display: flex;
-}
-
 /* MOBILE */
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
-    h2 { font-size: 20px; }
-    .text { font-size: 20px; }
+    h2 { font-size: 18px; }
+    .text { font-size: 18px; }
 }
 </style>
 </head>
 
 <body>
 
-<audio id="bgMusic" src="tptoe.mp3" loop></audio>
+<audio id="bgMusic" src="tptoe.mp3" preload="auto" loop></audio>
 
 <div class="container">
 
@@ -132,23 +139,35 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-// 🎯 typing per kata
-function typeWords(element, text, speed = 200) {
+// 🎵 FIX AUDIO (SUPER AMAN)
+function playMusic() {
+    music.load();
+    music.volume = 0.5;
+
+    const playPromise = music.play();
+
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            document.addEventListener("click", () => {
+                music.play();
+            }, { once: true });
+        });
+    }
+}
+
+// ✨ typing smooth per kata (ga kaku)
+function typeWordsSmooth(element, text, delay = 200) {
+    element.style.display = "block";
     element.innerHTML = "";
-    element.classList.add("show");
 
     const words = text.split(" ");
-    let i = 0;
-
-    function addWord() {
-        if (i < words.length) {
-            element.innerHTML += words[i] + " ";
-            i++;
-            setTimeout(addWord, speed);
-        }
-    }
-
-    addWord();
+    words.forEach((word, i) => {
+        const span = document.createElement("span");
+        span.classList.add("word");
+        span.style.animationDelay = (i * delay) + "ms";
+        span.innerHTML = word + " ";
+        element.appendChild(span);
+    });
 }
 
 // 😈 tombol NO teleport
@@ -169,50 +188,44 @@ function antiClick(btn) {
     btn.addEventListener("click", move);
 }
 
-// aktifin NO pertama
 antiClick(document.getElementById("no1"));
 
 // FLOW
 document.getElementById("yes1").onclick = () => {
 
-    // 🎵 play music
-    music.volume = 0.5;
-    music.play();
+    playMusic(); // 🔥 FIX AUDIO
 
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
-    // TEXT 1
-    typeWords(
+    typeWordsSmooth(
         document.getElementById("msg1"),
         "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️",
-        180
+        150
     );
 
-    // TEXT 2
     setTimeout(() => {
-        typeWords(
+        typeWordsSmooth(
             document.getElementById("msg2"),
             "i have something else, wanna see?",
-            180
+            150
         );
-    }, 3000);
+    }, 2500);
 
-    // tombol kedua
     setTimeout(() => {
-        document.getElementById("btn2").classList.add("showBtn");
+        document.getElementById("btn2").style.display = "flex";
         antiClick(document.getElementById("no2"));
-    }, 5000);
+    }, 4500);
 };
 
 // YES kedua
 document.getElementById("yes2").onclick = () => {
     document.getElementById("btn2").style.display = "none";
 
-    typeWords(
+    typeWordsSmooth(
         document.getElementById("msg3"),
         "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖",
-        160
+        140
     );
 };
 </script>
