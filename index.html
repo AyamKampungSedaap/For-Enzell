@@ -66,7 +66,6 @@ button {
 .no {
     background-color: #aaa;
     color: white;
-    position: relative;
 }
 
 /* TEXT 1 */
@@ -146,6 +145,32 @@ button {
     }
 }
 
+/* ENDING */
+.message3 {
+    display: none;
+    margin-top: 20px;
+    font-size: 20px;
+    color: #ff2e63;
+    opacity: 0;
+    transform: translateX(150px);
+}
+
+.show4 {
+    display: block;
+    animation: slideRight2 2.5s ease forwards;
+}
+
+@keyframes slideRight2 {
+    from {
+        opacity: 0;
+        transform: translateX(150px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* MOBILE */
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
@@ -182,6 +207,11 @@ button {
         <button class="no" id="no2">No</button>
     </div>
 
+    <div class="message3" id="msg3">
+        You're amazing babe, you've done your best and im proud of you. 
+        Keep it up pwitiee, i'll always be there for you 💖
+    </div>
+
 </div>
 
 <script>
@@ -192,9 +222,11 @@ document.addEventListener("click", () => {
     if (music.paused) music.play();
 }, { once: true });
 
-// 😈 FUNCTION KABUR FIX TOTAL
-function kabur(btn) {
-    function move() {
+// tombol NO teleport saat diklik
+function antiClick(btn) {
+    function move(e) {
+        e.preventDefault();
+
         const btnWidth = btn.offsetWidth;
         const btnHeight = btn.offsetHeight;
 
@@ -209,21 +241,20 @@ function kabur(btn) {
         btn.style.top = y + "px";
     }
 
-    btn.addEventListener("mouseover", move);
     btn.addEventListener("mousedown", move);
     btn.addEventListener("touchstart", move);
+    btn.addEventListener("click", move);
 }
 
 // aktifin NO pertama
-kabur(document.getElementById("no1"));
+antiClick(document.getElementById("no1"));
 
 // FLOW
 document.getElementById("yes1").onclick = () => {
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
-    const msg1 = document.getElementById("msg1");
-    msg1.classList.add("show1");
+    document.getElementById("msg1").classList.add("show1");
 
     setTimeout(() => {
         document.getElementById("msg2").classList.add("show2");
@@ -233,14 +264,14 @@ document.getElementById("yes1").onclick = () => {
         const btn2 = document.getElementById("btn2");
         btn2.classList.add("show3");
 
-        // 🔥 FIX UTAMA: aktifin kabur SETELAH muncul
-        kabur(document.getElementById("no2"));
+        antiClick(document.getElementById("no2"));
     }, 4000);
 };
 
-// tombol yes kedua
+// YES kedua → tampilkan ending
 document.getElementById("yes2").onclick = () => {
-    alert("You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you💖");
+    document.getElementById("btn2").style.display = "none";
+    document.getElementById("msg3").classList.add("show4");
 };
 </script>
 
