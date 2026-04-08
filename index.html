@@ -1,191 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For You 💖</title>
-
-<style>
-html, body {
-    margin: 0;
-    height: 100%;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
-}
-
-/* CENTER FIX */
-.container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.characters {
-    font-size: 70px;
-    animation: bounce 1.5s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-}
-
-h2 {
-    color: #d63384;
-    font-size: 18px;
-}
-
-/* BUTTON */
-.buttons {
-    margin-top: 20px;
-    display: flex;
-    gap: 15px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-.yes {
-    background-color: #ff4d6d;
-    color: white;
-}
-
-.no {
-    background-color: #aaa;
-    color: white;
-    position: relative;
-}
-
-/* TEXT 1 (slow dari kanan) */
-.message1 {
-    display: none;
-    margin-top: 25px;
-    font-size: 20px;
-    color: #ff2e63;
-    opacity: 0;
-    transform: translateX(200px);
-}
-
-.show1 {
-    display: block;
-    animation: slideRight 3s ease forwards;
-}
-
-@keyframes slideRight {
-    from {
-        opacity: 0;
-        transform: translateX(200px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* TEXT 2 (dari kiri) */
-.message2 {
-    display: none;
-    margin-top: 15px;
-    font-size: 18px;
-    color: #d63384;
-    opacity: 0;
-    transform: translateX(-150px);
-}
-
-.show2 {
-    display: block;
-    animation: slideLeft 2s ease forwards;
-}
-
-@keyframes slideLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-150px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-/* BUTTON 2 (dari bawah) */
-.buttons2 {
-    display: none;
-    margin-top: 15px;
-    gap: 10px;
-    opacity: 0;
-    transform: translateY(100px);
-}
-
-.show3 {
-    display: flex;
-    animation: slideUp 1.5s ease forwards;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* MOBILE */
-@media (max-width: 480px) {
-    .characters { font-size: 50px; }
-    button { font-size: 14px; }
-}
-</style>
-</head>
-
-<body>
-
-<audio id="bgMusic" src="tptoe.mp3" loop></audio>
-
-<div class="container">
-
-    <div class="characters">🐻💖🐰</div>
-
-    <h2 id="question">i have something to say for you, are you ready?</h2>
-
-    <div class="buttons" id="btn1">
-        <button class="yes" id="yes1">Yes</button>
-        <button class="no" id="no1">No</button>
-    </div>
-
-    <!-- TEXT 1 -->
-    <div class="message1" id="msg1">
-        you’re the prettiest, smartest, cuttest girl i’ve seen i love you ❤️
-    </div>
-
-    <!-- TEXT 2 -->
-    <div class="message2" id="msg2">
-        i have something else
-    </div>
-
-    <!-- BUTTON 2 -->
-    <div class="buttons2" id="btn2">
-        <button class="yes" id="yes2">Yes</button>
-        <button class="no" id="no2">No</button>
-    </div>
-
-</div>
-
 <script>
 const music = document.getElementById("bgMusic");
 
@@ -194,20 +6,31 @@ document.addEventListener("click", () => {
     if (music.paused) music.play();
 }, { once: true });
 
-// tombol no kabur function
+// FUNCTION KABUR (FIXED & LEBIH AGRESIF)
 function kabur(btn) {
-    btn.addEventListener("mouseover", () => {
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 50);
+    function move() {
+        const btnWidth = btn.offsetWidth;
+        const btnHeight = btn.offsetHeight;
+
+        const maxX = window.innerWidth - btnWidth;
+        const maxY = window.innerHeight - btnHeight;
+
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+
         btn.style.position = "fixed";
         btn.style.left = x + "px";
         btn.style.top = y + "px";
-    });
+    }
+
+    // semua trigger biar makin mustahil diklik 😈
+    btn.addEventListener("mouseover", move);
+    btn.addEventListener("mousedown", move);
+    btn.addEventListener("touchstart", move);
 }
 
-// aktifin no pertama & kedua
+// aktifin tombol pertama
 kabur(document.getElementById("no1"));
-kabur(document.getElementById("no2"));
 
 // flow utama
 document.getElementById("yes1").onclick = () => {
@@ -223,18 +46,18 @@ document.getElementById("yes1").onclick = () => {
         msg2.classList.add("show2");
     }, 2500);
 
-    // muncul tombol kedua
+    // muncul tombol kedua + AKTIFIN KABUR DISINI 🔥
     setTimeout(() => {
         const btn2 = document.getElementById("btn2");
         btn2.classList.add("show3");
+
+        const no2 = document.getElementById("no2");
+        kabur(no2); // <<< FIX UTAMA ADA DI SINI
     }, 4000);
 };
 
-// tombol yes kedua (bebas mau lanjut apa 😏)
+// tombol yes kedua
 document.getElementById("yes2").onclick = () => {
     alert("nah ini tinggal kamu isi endingnya 😏💖");
 };
 </script>
-
-</body>
-</html>
