@@ -12,7 +12,7 @@ html, body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    user-select: none; /* Prevent text selection */
+    user-select: none;
 }
 
 body {
@@ -21,13 +21,12 @@ body {
     position: relative;
 }
 
-/* 🔥 POSISI FIX TENGAH BANGET - STATE 1 */
-.initialState {
-    position: absolute;
+/* 🔥 STATE CONTAINER - SAM format */
+.stateContainer {
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,15 +62,15 @@ body {
     50% { transform: translateY(-10px); }
 }
 
-.initialState h2 {
+.stateContainer h2 {
     margin: 0;
     font-size: clamp(20px, 4vw, 28px);
     line-height: 1.3;
     max-width: 90%;
 }
 
-/* BUTTON - NORMAL */
-.buttons, .buttons2 {
+/* BUTTON */
+.buttons {
     display: flex;
     gap: 12px;
     opacity: 0;
@@ -115,12 +114,14 @@ button {
 }
 .no:hover { transform: translateY(-2px); }
 
-/* 🔥 NO BUTTON RANDOM POSITION */
+/* 🔥 NO BUTTON RANDOM POSITION - BENAR-BENAR DI DALAM LAYAR */
 .noButtonRandom {
     position: fixed !important;
     z-index: 9999 !important;
     animation: bounceIn 0.3s ease-out;
     pointer-events: auto;
+    left: 0 !important;
+    top: 0 !important;
 }
 
 @keyframes bounceIn {
@@ -139,53 +140,19 @@ button {
 
 /* 🌸 FLOWER */
 .bouquet {
-    width: 200px;
-    opacity: 0;
-    transition: opacity 1s ease, transform 1s ease;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    z-index: 5;
-}
-
-/* TEXT */
-.text {
-    display: none;
-    font-size: clamp(18px, 3.5vw, 24px);
-    line-height: 1.6;
-    max-width: 90%;
-    margin: 0 auto;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 5;
-}
-
-.mainText { color:#ff2e63; }
-.questionText { color:#c94f7c; font-style: italic; }
-
-/* typing */
-.word {
+    width: 200px;
     opacity: 0;
-    transform: translateY(10px);
-    display: inline-block;
-    animation: fadeWord 0.5s forwards;
-    margin-right: 6px;
-}
-
-@keyframes fadeWord {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    transition: all 1s ease;
+    z-index: 5;
 }
 
 /* RESPONSIVE */
 @media (max-width: 480px) {
-    .initialState {
+    .stateContainer {
         gap: 15px;
         padding: 15px;
     }
@@ -208,9 +175,9 @@ button {
 
 <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
-<div class="initialState" id="initialState">
-
-    <div class="kissWrap" id="char">
+<!-- STATE 1 -->
+<div class="stateContainer" id="state1">
+    <div class="kissWrap" id="char1">
         <lord-icon
             src="https://cdn.lordicon.com/xyboiuok.json"
             trigger="loop"
@@ -219,34 +186,38 @@ button {
         </lord-icon>
     </div>
 
-    <h2 id="question">i have something to say for you, are you ready?</h2>
+    <h2 id="question1">i have something to say for you, are you ready?</h2>
 
     <div class="buttons showBtn" id="btn1">
         <button class="yes" id="yes1">Yes</button>
         <button class="no" id="no1">No</button>
     </div>
-
 </div>
 
-<!-- ELEMENTS UNTUK STATE SELANJUTNYA -->
-<lord-icon
-    class="bouquet"
-    id="bouquet"
-    src="https://cdn.lordicon.com/eaxiadjd.json"
-    trigger="loop"
-    colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0"
-    style="width:200px;height:200px">
-</lord-icon>
+<!-- STATE 2 ELEMENTS -->
+<lord-icon class="bouquet" id="bouquet1" src="https://cdn.lordicon.com/eaxiadjd.json" trigger="loop" colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0" style="width:200px;height:200px"></lord-icon>
 
-<div class="text mainText" id="msg1"></div>
-<div class="text questionText" id="msg2"></div>
+<!-- STATE 3 -->
+<div class="stateContainer" id="state3" style="display:none;">
+    <div class="kissWrap" id="char3">
+        <lord-icon
+            src="https://cdn.lordicon.com/xyboiuok.json"
+            trigger="loop"
+            colors="primary:#ff4d6d,secondary:#ff9eb5"
+            style="width:120px;height:120px">
+        </lord-icon>
+    </div>
 
-<div class="buttons2" id="btn2"></div>
-<div class="text mainText" id="msg3"></div>
+    <h2 id="question3">[TULIS TEXT STATE 3 DI SINI]</h2>
+
+    <div class="buttons showBtn" id="btn3">
+        <button class="yes" id="yes3">Yes</button>
+        <button class="no" id="no3">No</button>
+    </div>
+</div>
 
 <script>
 const music = document.getElementById("bgMusic");
-const initialState = document.getElementById("initialState");
 
 function playMusic() {
     music.load();
@@ -267,94 +238,116 @@ function typeWordsSmooth(el, text, delay=250){
 }
 
 function moveNoButtonRandom(btn) {
-    // Hapus event listener sebelumnya agar tidak stack
     btn.removeEventListener('mouseover', btn.randomMoveHandler);
+    btn.removeEventListener('touchstart', btn.randomMoveHandler);
     
-    // Buat fungsi baru untuk event handler
     btn.randomMoveHandler = function() {
-        const margin = 15;
+        const margin = 20;
         const btnRect = btn.getBoundingClientRect();
-        const btnWidth = btnRect.width;
-        const btnHeight = btnRect.height;
+        const btnWidth = btnRect.width || 100;
+        const btnHeight = btnRect.height || 50;
         
-        const maxX = window.innerWidth - btnWidth - margin;
-        const maxY = window.innerHeight - btnHeight - margin;
+        // ✅ BENAR-BENAR DI DALAM LAYAR
+        const maxX = Math.max(0, window.innerWidth - btnWidth - margin);
+        const maxY = Math.max(0, window.innerHeight - btnHeight - margin);
         
-        // Posisi random dengan bounce animation
         const randomX = Math.random() * maxX + margin;
         const randomY = Math.random() * maxY + margin;
         
+        btn.style.position = "fixed";
         btn.style.left = randomX + "px";
         btn.style.top = randomY + "px";
         btn.style.transform = "scale(1.05)";
         btn.classList.add("noButtonRandom");
+        btn.style.zIndex = "9999";
         
-        // Reset scale setelah animasi
         setTimeout(() => {
             btn.style.transform = "scale(1)";
         }, 300);
         
-        // Langsung attach ulang event handler
         setTimeout(() => {
             moveNoButtonRandom(btn);
         }, 50);
     };
     
-    // Attach event handler
     btn.addEventListener('mouseover', btn.randomMoveHandler);
-    btn.addEventListener('touchstart', btn.randomMoveHandler); // Untuk mobile
+    btn.addEventListener('touchstart', btn.randomMoveHandler);
 }
 
-// Anti-click untuk tombol No pertama
+// STATE 1
 const no1 = document.getElementById("no1");
 moveNoButtonRandom(no1);
 
 document.getElementById("yes1").onclick = ()=>{
     playMusic();
-
-    // Hide initial state
-    initialState.style.opacity = "0";
-    initialState.style.transform = "translate(-50%, -50%) scale(0.8)";
     
-    setTimeout(() => {
-        initialState.style.display = "none";
-    }, 500);
-
-    // Show bouquet di tengah
-    const bouquet = document.getElementById("bouquet");
-    bouquet.style.opacity = "1";
-    bouquet.style.transform = "translate(-50%, -50%) scale(1)";
-
-    // Show messages
-    typeWordsSmooth(document.getElementById("msg1"), "you're the prettiest, smartest, cutest girl i've seen i love you ❤️");
-
+    // Hide state 1
+    document.getElementById("state1").style.display = "none";
+    
+    // Show bouquet
+    document.getElementById("bouquet1").style.opacity = "1";
+    document.getElementById("bouquet1").style.transform = "translate(-50%, -50%) scale(1)";
+    
+    // Text state 2 - POSISI SAMA STATE 1
+    const msg1 = document.createElement("div");
+    msg1.id = "msg1";
+    msg1.className = "stateContainer";
+    msg1.innerHTML = '<h2 id="text1" style="font-size: clamp(20px, 4vw, 28px); line-height: 1.3; max-width: 90%; margin: 0;"></h2>';
+    document.body.appendChild(msg1);
+    
+    typeWordsSmooth(document.getElementById("text1"), "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️");
+    
     setTimeout(()=>{
-        typeWordsSmooth(document.getElementById("msg2"), "i have something else, wanna see?");
+        const msg2 = document.createElement("div");
+        msg2.id = "msg2";
+        msg2.className = "stateContainer";
+        msg2.innerHTML = '<h2 id="question2" style="font-size: clamp(20px, 4vw, 28px); line-height: 1.3; max-width: 90%; margin: 0; font-style: italic; color: #c94f7c;"></h2>';
+        document.body.appendChild(msg2);
+        
+        typeWordsSmooth(document.getElementById("question2"), "i have something else, wanna see?");
     }, 3500);
 
     setTimeout(()=>{
-        const btn2 = document.getElementById("btn2");
-        btn2.style.position = "fixed";
-        btn2.style.top = "60%";
-        btn2.style.left = "50%";
-        btn2.style.transform = "translate(-50%, -50%)";
+        // Show btn2 di posisi sama state 1
+        const btn2 = document.getElementById("btn2") || document.createElement("div");
+        if (!document.getElementById("btn2")) {
+            btn2.id = "btn2";
+            btn2.className = "buttons showBtn";
+            btn2.innerHTML = '<button class="yes" id="yes2">Yes</button><button class="no" id="no2">No</button>';
+            btn2.style.position = "fixed";
+            btn2.style.top = "50%";
+            btn2.style.left = "50%";
+            btn2.style.transform = "translate(-50%, 30px)";
+            document.body.appendChild(btn2);
+        }
         btn2.style.display = "flex";
-        btn2.style.zIndex = "15";
-        btn2.classList.add("showBtn");
         
         const no2 = document.getElementById("no2");
         moveNoButtonRandom(no2);
     }, 6000);
 };
 
-document.getElementById("yes2").onclick = ()=>{
-    document.getElementById("btn2").style.display = "none";
-    document.getElementById("bouquet").style.opacity = "0";
+// STATE 2 to STATE 3
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'yes2') {
+        // Hide state 2 elements
+        document.getElementById("msg1")?.remove();
+        document.getElementById("msg2")?.remove();
+        document.getElementById("btn2")?.remove();
+        document.getElementById("bouquet1").style.opacity = "0";
+        
+        // Show state 3
+        document.getElementById("state3").style.display = "flex";
+    }
+});
 
-    typeWordsSmooth(
-        document.getElementById("msg3"),
-        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
-    );
+// STATE 3
+const no3 = document.getElementById("no3");
+moveNoButtonRandom(no3);
+
+document.getElementById("yes3").onclick = ()=>{
+    // GANTI TEXT DI SINI
+    document.getElementById("question3").textContent = "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖";
 };
 </script>
 
