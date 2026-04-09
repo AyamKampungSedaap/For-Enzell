@@ -28,39 +28,35 @@ body {
     align-items: center;
 }
 
-/* 🔥 KARAKTER FIX (RAPI & CENTER) */
-.characters {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    font-size: 60px;
+/* 💋 KISS ANIMATION */
+.kissWrap {
     opacity: 0;
-    transform: translateY(-20px);
-    animation: fadeChar 1.2s ease forwards;
+    transform: translateY(-20px) scale(0.8);
+    animation: kissIn 1.2s ease forwards;
 }
 
-@keyframes fadeChar {
+@keyframes kissIn {
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
-/* animasi halus */
-.char {
-    animation: float 2s ease-in-out infinite;
+/* animasi setelah muncul */
+.kissWrap lord-icon {
+    animation: float 2.5s ease-in-out infinite;
 }
 
 @keyframes float {
     0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-10px); }
 }
 
 /* 🌸 FLOWER */
 .bouquet {
     width: 200px;
     opacity: 0;
+    transition: opacity 1s ease;
 }
 
 /* BUTTON */
@@ -130,11 +126,14 @@ button {
 
 <div class="container">
 
-    <!-- 🔥 KARAKTER BARU (RAPI) -->
-    <div class="characters" id="char">
-        <span class="char">🐻</span>
-        <span class="char">💋</span>
-        <span class="char">🐰</span>
+    <!-- 💋 KISS ANIMATION (BARU) -->
+    <div class="kissWrap" id="char">
+        <lord-icon
+            src="https://cdn.lordicon.com/xyboiuok.json"
+            trigger="loop"
+            colors="primary:#ff4d6d,secondary:#ff9eb5"
+            style="width:120px;height:120px">
+        </lord-icon>
     </div>
 
     <!-- 🌸 FLOWER -->
@@ -187,12 +186,16 @@ function typeWordsSmooth(el,text,delay=250){
     });
 }
 
+/* 🔥 FIX NO BUTTON RANDOM SELURUH LAYAR */
 function antiClick(btn){
-    btn.addEventListener("click",(e)=>{
-        e.preventDefault();
+    btn.addEventListener("mouseover",()=>{
+
+        const maxX = window.innerWidth - btn.offsetWidth;
+        const maxY = window.innerHeight - btn.offsetHeight;
+
         btn.style.position="fixed";
-        btn.style.left=Math.random()*80+"%";
-        btn.style.top=Math.random()*80+"%";
+        btn.style.left=Math.random()*maxX+"px";
+        btn.style.top=Math.random()*maxY+"px";
     });
 }
 
