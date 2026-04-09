@@ -75,9 +75,9 @@ button {
     line-height: 1.6;
 }
 
-/* ✨ WARNA KHUSUS PERTANYAAN */
+/* ✨ PINK LEBIH GELAP */
 .question-text {
-    color: #6a00f4;
+    color: #d61a5e;
 }
 
 .word {
@@ -153,7 +153,6 @@ function playMusic() {
     }
 }
 
-// ✨ TAMBAH PARAMETER CLASS
 function typeWordsSmooth(element, text, delay = 250, extraClass = "") {
     element.style.display = "block";
     element.innerHTML = "";
@@ -205,7 +204,7 @@ document.getElementById("yes1").onclick = () => {
             document.getElementById("msg2"),
             "i have something else, wanna see?",
             250,
-            "question-text" // ✨ warna beda
+            "question-text"
         );
     }, 3500);
 
