@@ -116,7 +116,7 @@ button {
     pointer-events: auto;
 }
 
-/* 🔥 NO BUTTON - BENAR-BENAR 4 POJOK LAYAR */
+/* 🔥 NO BUTTON - PERFECT 4 POJOK */
 .no.moving {
     position: fixed !important;
     z-index: 9999 !important;
@@ -125,15 +125,9 @@ button {
 }
 
 @keyframes cornerMove {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
 }
 
 /* 🌸 FLOWER */
@@ -213,24 +207,39 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-// ✅ BENAR-BENAR 4 POJOK LAYAR
-const corners = [
-    {left: '10px', top: '10px'},                           // 🔥 POJOK KIRI ATAS
-    {left: 'calc(100vw - 110px)', top: '10px'},            // 🔥 POJOK KANAN ATAS
-    {left: 'calc(100vw - 110px)', top: 'calc(100vh - 70px)'}, // 🔥 POJOK KANAN BAWAH
-    {left: '10px', top: 'calc(100vh - 70px)'}              // 🔥 POJOK KIRI BAWAH
-];
+// ✅ PERFECT 4 POJOK - LAPTOP & MOBILE
+function getButtonCorners() {
+    const btnWidth = 100;  // Approximate button width
+    const btnHeight = 50;  // Approximate button height
+    const margin = 10;
+    
+    return [
+        // 🔥 POJOK KIRI ATAS
+        {left: `${margin}px`, top: `${margin}px`},
+        
+        // 🔥 POJOK KANAN ATAS  
+        {left: `calc(100vw - ${btnWidth + margin}px)`, top: `${margin}px`},
+        
+        // 🔥 POJOK KANAN BAWAH
+        {left: `calc(100vw - ${btnWidth + margin}px)`, top: `calc(100vh - ${btnHeight + margin}px)`},
+        
+        // 🔥 POJOK KIRI BAWAH
+        {left: `${margin}px`, top: `calc(100vh - ${btnHeight + margin}px)`}
+    ];
+}
 
 function moveToCorner(btn, cornerIndex) {
+    const corners = getButtonCorners();
     const corner = corners[cornerIndex];
     
-    // Langsung set posisi pojok
+    // Set posisi pojok
     btn.style.position = 'fixed';
     btn.style.left = corner.left;
     btn.style.top = corner.top;
+    btn.style.margin = '0';
     btn.style.zIndex = '9999';
     
-    // Animasi scale
+    // Animasi
     btn.classList.remove('moving');
     void btn.offsetWidth;
     btn.classList.add('moving');
@@ -241,13 +250,8 @@ function startCornerLoop(btn) {
     
     const moveInterval = setInterval(() => {
         moveToCorner(btn, currentCorner);
-        currentCorner = (currentCorner + 1) % 4; // 0→1→2→3→0→1...
+        currentCorner = (currentCorner + 1) % 4;
     }, 1000);
-    
-    // Stop loop saat yes di-click
-    const stopLoop = () => clearInterval(moveInterval);
-    btn.addEventListener('remove', stopLoop);
-    document.addEventListener('yesClicked', stopLoop);
     
     return moveInterval;
 }
@@ -259,17 +263,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById(id);
         if (btn) {
             let loopStarted = false;
+            let intervalId;
+            
             const startLoop = () => {
                 if (!loopStarted) {
                     loopStarted = true;
                     // Mulai dari pojok kiri atas
                     moveToCorner(btn, 0);
-                    setTimeout(() => startCornerLoop(btn), 500);
+                    intervalId = startCornerLoop(btn);
+                }
+            };
+            
+            const stopLoop = () => {
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    loopStarted = false;
                 }
             };
             
             btn.addEventListener('mouseenter', startLoop);
             btn.addEventListener('touchstart', startLoop);
+            
+            // Stop saat parent di-hide
+            const parentObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        const parent = btn.closest('.stateContainer, .buttons');
+                        if (parent && (parent.style.display === 'none' || !parent.offsetParent)) {
+                            stopLoop();
+                        }
+                    }
+                });
+            });
+            parentObserver.observe(btn.parentElement, { attributes: true });
         }
     });
 });
@@ -277,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // STATE 1
 document.getElementById("yes1").onclick = ()=>{
     playMusic();
-    document.dispatchEvent(new Event('yesClicked'));
     
     document.getElementById("state1").style.display = "none";
     
@@ -323,7 +348,6 @@ document.getElementById("yes1").onclick = ()=>{
 // STATE 2 to STATE 3
 document.addEventListener('click', function(e) {
     if (e.target.id === 'yes2') {
-        document.dispatchEvent(new Event('yesClicked'));
         document.getElementById("msg1")?.remove();
         document.getElementById("msg2")?.remove();
         document.getElementById("btn2")?.remove();
