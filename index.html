@@ -43,7 +43,6 @@ h2 {
     font-size: 22px;
 }
 
-/* ✨ ANIMASI HALUS UNTUK BUTTON */
 @keyframes fadeSlideUp {
     from {
         opacity: 0;
@@ -72,7 +71,6 @@ button {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ✨ HOVER HALUS */
 button:hover {
     transform: scale(1.08);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -111,7 +109,6 @@ button:hover {
     }
 }
 
-/* ✨ BUTTON KEDUA JUGA HALUS */
 .buttons2 {
     display: none;
     margin-top: 15px;
@@ -190,12 +187,18 @@ function typeWordsSmooth(element, text, delay = 250) {
     });
 }
 
+// ✅ FIX: BATASIN DI DALAM LAYAR
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
 
-        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+        const padding = 20; // biar ga nempel pinggir
+
+        const maxX = window.innerWidth - btn.offsetWidth - padding;
+        const maxY = window.innerHeight - btn.offsetHeight - padding;
+
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
 
         btn.style.position = "fixed";
         btn.style.left = x + "px";
@@ -230,7 +233,7 @@ document.getElementById("yes1").onclick = () => {
 
     setTimeout(() => {
         const btn2 = document.getElementById("btn2");
-        btn2.classList.add("show"); // ✨ trigger animasi halus
+        btn2.classList.add("show");
         antiClick(document.getElementById("no2"));
     }, 6000);
 };
