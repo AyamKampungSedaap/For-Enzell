@@ -10,17 +10,18 @@
 <style>
 html, body {
     margin: 0;
-    height: 100%;
+    height: 100vh;
+    overflow: hidden;
 }
 
 body {
     font-family: 'Playfair Display', serif;
     background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
-    overflow: hidden;
+    position: relative;
 }
 
-/* 🔥 POSISI FIX TENGAH BANGET */
-.container {
+/* 🔥 POSISI FIX TENGAH BANGET - STATE 1 */
+.initialState {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -30,7 +31,11 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 12px;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* 💋 KISS */
@@ -56,15 +61,11 @@ body {
     50% { transform: translateY(-10px); }
 }
 
-h2 {
+.initialState h2 {
     margin: 0;
-}
-
-/* 🌸 FLOWER */
-.bouquet {
-    width: 200px;
-    opacity: 0;
-    transition: opacity 1s ease;
+    font-size: clamp(20px, 4vw, 28px);
+    line-height: 1.3;
+    max-width: 90%;
 }
 
 /* BUTTON */
@@ -87,20 +88,48 @@ h2 {
 }
 
 button {
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 12px 24px;
+    border-radius: 25px;
     border: none;
     cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 80px;
 }
 
-.yes { background:#ff4d6d; color:white; }
-.no { background:#aaa; color:white; }
+.yes { 
+    background: linear-gradient(135deg, #ff4d6d, #ff6b9d);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+    transition: all 0.3s ease;
+}
+.yes:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6); }
+.no { 
+    background: linear-gradient(135deg, #aaa, #ccc);
+    color: white;
+    transition: all 0.3s ease;
+}
+.no:hover { transform: translateY(-2px); }
+
+/* 🌸 FLOWER */
+.bouquet {
+    width: 200px;
+    opacity: 0;
+    transition: opacity 1s ease, transform 1s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+}
 
 /* TEXT */
 .text {
     display: none;
-    font-size: 22px;
+    font-size: clamp(18px, 3.5vw, 24px);
     line-height: 1.6;
+    max-width: 90%;
+    margin: 0 auto;
 }
 
 .mainText { color:#ff2e63; }
@@ -121,6 +150,18 @@ button {
         transform: translateY(0);
     }
 }
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .initialState {
+        gap: 15px;
+        padding: 15px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 15px;
+    }
+}
 </style>
 </head>
 
@@ -130,7 +171,7 @@ button {
 
 <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
-<div class="container">
+<div class="initialState" id="initialState">
 
     <div class="kissWrap" id="char">
         <lord-icon
@@ -148,29 +189,27 @@ button {
         <button class="no" id="no1">No</button>
     </div>
 
-    <lord-icon
-        class="bouquet"
-        id="bouquet"
-        src="https://cdn.lordicon.com/eaxiadjd.json"
-        trigger="loop"
-        colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0"
-        style="width:200px;height:200px">
-    </lord-icon>
-
-    <div class="text mainText" id="msg1"></div>
-    <div class="text questionText" id="msg2"></div>
-
-    <div class="buttons2" id="btn2">
-        <button class="yes" id="yes2">Yes</button>
-        <button class="no" id="no2">No</button>
-    </div>
-
-    <div class="text mainText" id="msg3"></div>
-
 </div>
+
+<!-- ELEMENTS UNTUK STATE SELANJUTNYA -->
+<lord-icon
+    class="bouquet"
+    id="bouquet"
+    src="https://cdn.lordicon.com/eaxiadjd.json"
+    trigger="loop"
+    colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0"
+    style="width:200px;height:200px">
+</lord-icon>
+
+<div class="text mainText" id="msg1"></div>
+<div class="text questionText" id="msg2"></div>
+
+<div class="buttons2" id="btn2"></div>
+<div class="text mainText" id="msg3"></div>
 
 <script>
 const music = document.getElementById("bgMusic");
+const initialState = document.getElementById("initialState");
 
 function playMusic() {
     music.load();
@@ -178,59 +217,73 @@ function playMusic() {
     music.play().catch(()=>{});
 }
 
-function typeWordsSmooth(el,text,delay=250){
-    el.style.display="block";
-    el.innerHTML="";
-    text.split(" ").forEach((w,i)=>{
-        let s=document.createElement("span");
-        s.className="word";
-        s.style.animationDelay=(i*delay)+"ms";
-        s.textContent=w;
+function typeWordsSmooth(el, text, delay=250){
+    el.style.display = "block";
+    el.innerHTML = "";
+    text.split(" ").forEach((w, i)=>{
+        let s = document.createElement("span");
+        s.className = "word";
+        s.style.animationDelay = (i * delay) + "ms";
+        s.textContent = w;
         el.appendChild(s);
     });
 }
 
 function antiClick(btn){
-    btn.addEventListener("mouseover",()=>{
+    btn.addEventListener("mouseover", ()=>{
         const margin = 10;
         const maxX = window.innerWidth - btn.offsetWidth - margin;
         const maxY = window.innerHeight - btn.offsetHeight - margin;
 
-        btn.style.position="fixed";
-        btn.style.left = (Math.random()*maxX + margin) + "px";
-        btn.style.top  = (Math.random()*maxY + margin) + "px";
+        btn.style.position = "fixed";
+        btn.style.left = (Math.random() * maxX + margin) + "px";
+        btn.style.top = (Math.random() * maxY + margin) + "px";
+        btn.style.zIndex = "9999";
     });
 }
 
+// Anti-click untuk tombol No pertama
+const no1 = document.getElementById("no1");
 antiClick(no1);
 
-yes1.onclick=()=>{
+document.getElementById("yes1").onclick = ()=>{
     playMusic();
 
-    question.style.display="none";
-    btn1.style.display="none";
+    // Hide initial state
+    initialState.style.opacity = "0";
+    initialState.style.transform = "translate(-50%, -50%) scale(0.8)";
+    
+    setTimeout(() => {
+        initialState.style.display = "none";
+    }, 500);
 
-    char.style.display="none";
-    bouquet.style.opacity="1";
+    // Show bouquet di tengah
+    const bouquet = document.getElementById("bouquet");
+    bouquet.style.opacity = "1";
+    bouquet.style.transform = "translate(-50%, -50%) scale(1)";
 
-    typeWordsSmooth(msg1,"you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️");
+    // Show messages
+    typeWordsSmooth(document.getElementById("msg1"), "you're the prettiest, smartest, cutest girl i've seen i love you ❤️");
 
     setTimeout(()=>{
-        typeWordsSmooth(msg2,"i have something else, wanna see?");
-    },3500);
+        typeWordsSmooth(document.getElementById("msg2"), "i have something else, wanna see?");
+    }, 3500);
 
     setTimeout(()=>{
-        btn2.style.display="flex";
+        const btn2 = document.getElementById("btn2");
+        btn2.style.display = "flex";
         btn2.classList.add("showBtn");
+        const no2 = document.getElementById("no2");
         antiClick(no2);
-    },6000);
+    }, 6000);
 };
 
-yes2.onclick=()=>{
-    btn2.style.display="none";
+document.getElementById("yes2").onclick = ()=>{
+    document.getElementById("btn2").style.display = "none";
+    document.getElementById("bouquet").style.opacity = "0";
 
     typeWordsSmooth(
-        msg3,
+        document.getElementById("msg3"),
         "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
     );
 };
