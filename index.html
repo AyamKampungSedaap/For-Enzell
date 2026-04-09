@@ -26,14 +26,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px; /* 🔥 jarak rapih antar semua elemen */
 }
 
-/* 💋 KISS ANIMATION */
+/* 💋 KISS */
 .kissWrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px; /* biar pas di atas text */
     opacity: 0;
     transform: translateY(-20px) scale(0.8);
     animation: kissIn 1.2s ease forwards;
@@ -46,7 +43,6 @@ body {
     }
 }
 
-/* animasi setelah muncul */
 .kissWrap lord-icon {
     animation: float 2.5s ease-in-out infinite;
 }
@@ -54,6 +50,11 @@ body {
 @keyframes float {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
+}
+
+/* 🔥 FIX TEXT BIAR GA ADA JARAK NGACO */
+h2 {
+    margin: 0;
 }
 
 /* 🌸 FLOWER */
@@ -65,9 +66,8 @@ body {
 
 /* BUTTON */
 .buttons, .buttons2 {
-    margin-top: 20px;
     display: flex;
-    gap: 15px;
+    gap: 12px;
     opacity: 0;
     transform: translateY(20px);
 }
@@ -96,7 +96,6 @@ button {
 /* TEXT */
 .text {
     display: none;
-    margin-top: 20px;
     font-size: 22px;
     line-height: 1.6;
 }
@@ -140,7 +139,14 @@ button {
         </lord-icon>
     </div>
 
+    <!-- TEXT -->
     <h2 id="question">i have something to say for you, are you ready?</h2>
+
+    <!-- BUTTON -->
+    <div class="buttons showBtn" id="btn1">
+        <button class="yes" id="yes1">Yes</button>
+        <button class="no" id="no1">No</button>
+    </div>
 
     <!-- 🌸 FLOWER -->
     <lord-icon
@@ -151,11 +157,6 @@ button {
         colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0"
         style="width:200px;height:200px">
     </lord-icon>
-
-    <div class="buttons showBtn" id="btn1">
-        <button class="yes" id="yes1">Yes</button>
-        <button class="no" id="no1">No</button>
-    </div>
 
     <div class="text mainText" id="msg1"></div>
     <div class="text questionText" id="msg2"></div>
@@ -190,21 +191,16 @@ function typeWordsSmooth(el,text,delay=250){
     });
 }
 
-/* 🔥 FIX NO BUTTON BIAR GA KELUAR LAYAR */
+/* FIX NO BUTTON */
 function antiClick(btn){
     btn.addEventListener("mouseover",()=>{
-
         const margin = 10;
-
         const maxX = window.innerWidth - btn.offsetWidth - margin;
         const maxY = window.innerHeight - btn.offsetHeight - margin;
 
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
-
         btn.style.position="fixed";
-        btn.style.left = Math.max(margin, x) + "px";
-        btn.style.top  = Math.max(margin, y) + "px";
+        btn.style.left = (Math.random()*maxX + margin) + "px";
+        btn.style.top  = (Math.random()*maxY + margin) + "px";
     });
 }
 
