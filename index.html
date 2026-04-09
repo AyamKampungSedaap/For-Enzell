@@ -28,9 +28,28 @@ body {
     align-items: center;
 }
 
+/* CHARACTER AWAL */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
+}
+
+/* BUNGA */
+.flower {
+    font-size: 60px;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.showFlower {
+    animation: bloom 2s ease forwards;
+}
+
+@keyframes bloom {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 @keyframes bounce {
@@ -43,10 +62,24 @@ h2 {
     font-size: 22px;
 }
 
-.buttons {
+/* BUTTON */
+.buttons, .buttons2 {
     margin-top: 20px;
     display: flex;
     gap: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.showBtn {
+    animation: fadeUp 1s ease forwards;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 button {
@@ -67,14 +100,26 @@ button {
     color: white;
 }
 
+/* TEXT */
 .text {
     display: none;
     margin-top: 20px;
     font-size: 22px;
-    color: #ff2e63;
     line-height: 1.6;
 }
 
+/* TEXT UTAMA */
+.mainText {
+    color: #ff2e63;
+}
+
+/* TEXT PERTANYAAN */
+.questionText {
+    color: #c94f7c; /* 🔥 beda warna */
+    font-style: italic;
+}
+
+/* typing */
 .word {
     opacity: 0;
     transform: translateY(10px);
@@ -90,14 +135,9 @@ button {
     }
 }
 
-.buttons2 {
-    display: none;
-    margin-top: 15px;
-    gap: 10px;
-}
-
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
+    .flower { font-size: 50px; }
     h2 { font-size: 18px; }
     .text { font-size: 18px; }
 }
@@ -106,51 +146,47 @@ button {
 
 <body>
 
-<!-- 🎵 NAMA FILE SUDAH FIX -->
 <audio id="bgMusic" src="HYBS - TipToe (Official Video).mp3" preload="auto" loop></audio>
 
 <div class="container">
 
-    <div class="characters">🐻💖🐰</div>
+    <div class="characters" id="char">🐻💖🐰</div>
+    <div class="flower" id="flower">🌸</div>
 
     <h2 id="question">i have something to say for you, are you ready?</h2>
 
-    <div class="buttons" id="btn1">
+    <div class="buttons showBtn" id="btn1">
         <button class="yes" id="yes1">Yes</button>
         <button class="no" id="no1">No</button>
     </div>
 
-    <div class="text" id="msg1"></div>
-    <div class="text" id="msg2"></div>
+    <div class="text mainText" id="msg1"></div>
+    <div class="text questionText" id="msg2"></div>
 
     <div class="buttons2" id="btn2">
         <button class="yes" id="yes2">Yes</button>
         <button class="no" id="no2">No</button>
     </div>
 
-    <div class="text" id="msg3"></div>
+    <div class="text mainText" id="msg3"></div>
 
 </div>
 
 <script>
 const music = document.getElementById("bgMusic");
 
-// 🎵 AUDIO FIX
 function playMusic() {
     music.load();
     music.volume = 0.5;
-
-    let playPromise = music.play();
-    if (playPromise !== undefined) {
-        playPromise.catch(() => {
-            document.addEventListener("click", () => {
-                music.play();
-            }, { once: true });
+    let p = music.play();
+    if (p !== undefined) {
+        p.catch(() => {
+            document.addEventListener("click", () => music.play(), { once: true });
         });
     }
 }
 
-// ✨ TYPING LEBIH PELAN
+// typing smooth
 function typeWordsSmooth(element, text, delay = 250) {
     element.style.display = "block";
     element.innerHTML = "";
@@ -165,19 +201,16 @@ function typeWordsSmooth(element, text, delay = 250) {
     });
 }
 
-// 😈 NO TELEPORT
+// tombol NO teleport
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
-
         const x = Math.random() * (window.innerWidth - btn.offsetWidth);
         const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-
         btn.style.position = "fixed";
         btn.style.left = x + "px";
         btn.style.top = y + "px";
     }
-
     btn.addEventListener("mousedown", move);
     btn.addEventListener("touchstart", move);
     btn.addEventListener("click", move);
@@ -192,6 +225,11 @@ document.getElementById("yes1").onclick = () => {
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
+    // ganti ke bunga
+    document.getElementById("char").style.display = "none";
+    const flower = document.getElementById("flower");
+    flower.classList.add("showFlower");
+
     typeWordsSmooth(
         document.getElementById("msg1"),
         "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️"
@@ -205,7 +243,9 @@ document.getElementById("yes1").onclick = () => {
     }, 3500);
 
     setTimeout(() => {
-        document.getElementById("btn2").style.display = "flex";
+        const btn2 = document.getElementById("btn2");
+        btn2.style.display = "flex";
+        btn2.classList.add("showBtn");
         antiClick(document.getElementById("no2"));
     }, 6000);
 };
