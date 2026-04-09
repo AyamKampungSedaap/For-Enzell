@@ -75,7 +75,7 @@ button {
     line-height: 1.6;
 }
 
-/* ✨ PINK LEBIH GELAP */
+/* pink lebih gelap dikit */
 .question-text {
     color: #d61a5e;
 }
@@ -111,7 +111,7 @@ button {
 
 <body>
 
-<audio id="bgMusic" src="tptoecut.mp3" preload="auto" loop></audio>
+<audio id="bgMusic" src="HYBS - TipToe (Official Video).mp3" preload="auto" loop></audio>
 
 <div class="container">
 
@@ -153,7 +153,7 @@ function playMusic() {
     }
 }
 
-function typeWordsSmooth(element, text, delay = 400, extraClass = "") {
+function typeWordsSmooth(element, text, delay = 250, extraClass = "") {
     element.style.display = "block";
     element.innerHTML = "";
     element.className = "text " + extraClass;
@@ -194,10 +194,17 @@ document.getElementById("yes1").onclick = () => {
     document.getElementById("question").style.display = "none";
     document.getElementById("btn1").style.display = "none";
 
+    const text1 = "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️";
+    const delay = 400; // 🔥 bisa lu ubah sesuka hati
+
     typeWordsSmooth(
         document.getElementById("msg1"),
-        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️"
+        text1,
+        delay
     );
+
+    // hitung durasi otomatis biar ga tabrakan
+    const duration = text1.split(" ").length * delay + 500;
 
     setTimeout(() => {
         typeWordsSmooth(
@@ -206,12 +213,12 @@ document.getElementById("yes1").onclick = () => {
             250,
             "question-text"
         );
-    }, 3500);
+    }, duration);
 
     setTimeout(() => {
         document.getElementById("btn2").style.display = "flex";
         antiClick(document.getElementById("no2"));
-    }, 6000);
+    }, duration + 2500);
 };
 
 document.getElementById("yes2").onclick = () => {
@@ -219,7 +226,7 @@ document.getElementById("yes2").onclick = () => {
 
     typeWordsSmooth(
         document.getElementById("msg3"),
-        "You're amazing babe, you've done your best and i'm so proud of you. Keep it up pwitiee, i'll always be there for you 💖"
+        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
     );
 };
 </script>
