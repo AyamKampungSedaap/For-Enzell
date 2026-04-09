@@ -28,28 +28,10 @@ body {
     align-items: center;
 }
 
-/* CHARACTER AWAL */
+/* KARAKTER */
 .characters {
     font-size: 70px;
     animation: bounce 1.5s infinite;
-}
-
-/* BUNGA */
-.flower {
-    font-size: 60px;
-    opacity: 0;
-    transform: scale(0.5);
-}
-
-.showFlower {
-    animation: bloom 2s ease forwards;
-}
-
-@keyframes bloom {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 @keyframes bounce {
@@ -57,9 +39,36 @@ body {
     50% { transform: translateY(-12px); }
 }
 
-h2 {
-    color: #d63384;
-    font-size: 22px;
+/* 🌸 LILY */
+.lily {
+    width: 120px;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+/* mekarnya */
+.showLily {
+    animation: bloom 2.5s ease forwards, sway 4s ease-in-out infinite;
+}
+
+@keyframes bloom {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-8deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* 🌬️ goyang pelan */
+@keyframes sway {
+    0% { transform: rotate(0deg) translateY(0); }
+    25% { transform: rotate(2deg) translateY(-2px); }
+    50% { transform: rotate(0deg) translateY(0); }
+    75% { transform: rotate(-2deg) translateY(-2px); }
+    100% { transform: rotate(0deg) translateY(0); }
 }
 
 /* BUTTON */
@@ -84,21 +93,13 @@ h2 {
 
 button {
     padding: 10px 20px;
-    font-size: 15px;
-    border: none;
     border-radius: 20px;
+    border: none;
     cursor: pointer;
 }
 
-.yes {
-    background-color: #ff4d6d;
-    color: white;
-}
-
-.no {
-    background-color: #aaa;
-    color: white;
-}
+.yes { background:#ff4d6d; color:white; }
+.no { background:#aaa; color:white; }
 
 /* TEXT */
 .text {
@@ -108,16 +109,8 @@ button {
     line-height: 1.6;
 }
 
-/* TEXT UTAMA */
-.mainText {
-    color: #ff2e63;
-}
-
-/* TEXT PERTANYAAN */
-.questionText {
-    color: #c94f7c; /* 🔥 beda warna */
-    font-style: italic;
-}
+.mainText { color:#ff2e63; }
+.questionText { color:#c94f7c; font-style: italic; }
 
 /* typing */
 .word {
@@ -135,10 +128,10 @@ button {
     }
 }
 
+/* MOBILE */
 @media (max-width: 480px) {
     .characters { font-size: 50px; }
-    .flower { font-size: 50px; }
-    h2 { font-size: 18px; }
+    .lily { width: 90px; }
     .text { font-size: 18px; }
 }
 </style>
@@ -151,7 +144,12 @@ button {
 <div class="container">
 
     <div class="characters" id="char">🐻💖🐰</div>
-    <div class="flower" id="flower">🌸</div>
+
+    <!-- 🌸 LILY -->
+    <svg class="lily" id="lily" viewBox="0 0 100 100">
+        <path d="M50 20 C60 40, 80 40, 50 80 C20 40, 40 40, 50 20" fill="#ff9eb5"/>
+        <circle cx="50" cy="55" r="5" fill="#ffd166"/>
+    </svg>
 
     <h2 id="question">i have something to say for you, are you ready?</h2>
 
@@ -175,88 +173,60 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-function playMusic() {
+function playMusic(){
     music.load();
     music.volume = 0.5;
-    let p = music.play();
-    if (p !== undefined) {
-        p.catch(() => {
-            document.addEventListener("click", () => music.play(), { once: true });
-        });
-    }
+    music.play().catch(()=>{});
 }
 
-// typing smooth
-function typeWordsSmooth(element, text, delay = 250) {
-    element.style.display = "block";
-    element.innerHTML = "";
-
-    const words = text.split(" ");
-    words.forEach((word, i) => {
-        const span = document.createElement("span");
-        span.classList.add("word");
-        span.style.animationDelay = (i * delay) + "ms";
-        span.textContent = word;
-        element.appendChild(span);
+function typeWordsSmooth(el,text,delay=250){
+    el.style.display="block";
+    el.innerHTML="";
+    text.split(" ").forEach((w,i)=>{
+        let s=document.createElement("span");
+        s.className="word";
+        s.style.animationDelay=(i*delay)+"ms";
+        s.textContent=w;
+        el.appendChild(s);
     });
 }
 
-// tombol NO teleport
-function antiClick(btn) {
-    function move(e) {
+function antiClick(btn){
+    btn.addEventListener("click",(e)=>{
         e.preventDefault();
-        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-        btn.style.position = "fixed";
-        btn.style.left = x + "px";
-        btn.style.top = y + "px";
-    }
-    btn.addEventListener("mousedown", move);
-    btn.addEventListener("touchstart", move);
-    btn.addEventListener("click", move);
+        btn.style.position="fixed";
+        btn.style.left=Math.random()*80+"%";
+        btn.style.top=Math.random()*80+"%";
+    });
 }
 
-antiClick(document.getElementById("no1"));
+antiClick(no1);
 
-document.getElementById("yes1").onclick = () => {
-
+yes1.onclick=()=>{
     playMusic();
 
-    document.getElementById("question").style.display = "none";
-    document.getElementById("btn1").style.display = "none";
+    question.style.display="none";
+    btn1.style.display="none";
 
-    // ganti ke bunga
-    document.getElementById("char").style.display = "none";
-    const flower = document.getElementById("flower");
-    flower.classList.add("showFlower");
+    char.style.display="none";
+    lily.classList.add("showLily");
 
-    typeWordsSmooth(
-        document.getElementById("msg1"),
-        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️"
-    );
+    typeWordsSmooth(msg1,"you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️");
 
-    setTimeout(() => {
-        typeWordsSmooth(
-            document.getElementById("msg2"),
-            "i have something else, wanna see?"
-        );
-    }, 3500);
+    setTimeout(()=>{
+        typeWordsSmooth(msg2,"i have something else, wanna see?");
+    },3500);
 
-    setTimeout(() => {
-        const btn2 = document.getElementById("btn2");
-        btn2.style.display = "flex";
+    setTimeout(()=>{
+        btn2.style.display="flex";
         btn2.classList.add("showBtn");
-        antiClick(document.getElementById("no2"));
-    }, 6000);
+        antiClick(no2);
+    },6000);
 };
 
-document.getElementById("yes2").onclick = () => {
-    document.getElementById("btn2").style.display = "none";
-
-    typeWordsSmooth(
-        document.getElementById("msg3"),
-        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
-    );
+yes2.onclick=()=>{
+    btn2.style.display="none";
+    typeWordsSmooth(msg3,"You're amazing babe, you've done your best and i'm proud of you. Keep it up pwitiee, i'll always be there for you 💖");
 };
 </script>
 
