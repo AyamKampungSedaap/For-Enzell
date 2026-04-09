@@ -10,368 +10,214 @@
 <style>
 html, body {
     margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    user-select: none;
+    height: 100%;
 }
 
 body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: 'Playfair Display', serif;
     background: linear-gradient(135deg, #ffc0cb, #ffe4ec);
-    position: relative;
 }
 
-/* 🔥 STATE CONTAINER - SAM format */
-.stateContainer {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.container {
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 10;
 }
 
-/* 💋 KISS */
-.kissWrap {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.8);
-    animation: kissIn 1.2s ease forwards;
+.characters {
+    font-size: 70px;
+    animation: bounce 1.5s infinite;
 }
 
-@keyframes kissIn {
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
 }
 
-.kissWrap lord-icon {
-    animation: float 2.5s ease-in-out infinite;
+h2 {
+    color: #d63384;
+    font-size: 22px;
 }
 
-@keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-.stateContainer h2 {
-    margin: 0;
-    font-size: clamp(20px, 4vw, 28px);
-    line-height: 1.3;
-    max-width: 90%;
-}
-
-/* BUTTON */
 .buttons {
+    margin-top: 20px;
     display: flex;
-    gap: 12px;
+    gap: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.yes {
+    background-color: #ff4d6d;
+    color: white;
+}
+
+.no {
+    background-color: #aaa;
+    color: white;
+}
+
+.text {
+    display: none;
+    margin-top: 20px;
+    font-size: 22px;
+    color: #ff2e63;
+    line-height: 1.6;
+}
+
+.word {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
+    display: inline-block;
+    animation: fadeWord 0.5s forwards;
+    margin-right: 6px;
 }
 
-.showBtn {
-    animation: fadeUp 1s ease forwards;
-}
-
-@keyframes fadeUp {
+@keyframes fadeWord {
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-button {
-    padding: 12px 24px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 500;
-    min-width: 80px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 20;
+.buttons2 {
+    display: none;
+    margin-top: 15px;
+    gap: 10px;
 }
 
-.yes { 
-    background: linear-gradient(135deg, #ff4d6d, #ff6b9d);
-    color: white;
-    pointer-events: auto;
-}
-.yes:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6); }
-
-.no {
-    background: linear-gradient(135deg, #aaa, #ccc);
-    color: white;
-    pointer-events: auto;
-}
-
-/* 🔥 NO BUTTON - PERFECT 4 POJOK */
-.no.moving {
-    position: fixed !important;
-    z-index: 9999 !important;
-    animation: cornerMove 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
-}
-
-@keyframes cornerMove {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-    100% { transform: scale(1); }
-}
-
-/* 🌸 FLOWER */
-.bouquet {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    width: 200px;
-    opacity: 0;
-    transition: all 1s ease;
-    z-index: 5;
-}
-
-/* RESPONSIVE */
 @media (max-width: 480px) {
-    .stateContainer {
-        gap: 15px;
-        padding: 15px;
-    }
-    button {
-        padding: 10px 20px;
-        font-size: 15px;
-        min-width: 70px;
-    }
+    .characters { font-size: 50px; }
+    h2 { font-size: 18px; }
+    .text { font-size: 18px; }
 }
 </style>
 </head>
 
 <body>
 
+<!-- 🎵 NAMA FILE SUDAH FIX -->
 <audio id="bgMusic" src="HYBS - TipToe (Official Video).mp3" preload="auto" loop></audio>
 
-<script src="https://cdn.lordicon.com/lordicon.js"></script>
+<div class="container">
 
-<!-- STATE 1 -->
-<div class="stateContainer" id="state1">
-    <div class="kissWrap" id="char1">
-        <lord-icon
-            src="https://cdn.lordicon.com/xyboiuok.json"
-            trigger="loop"
-            colors="primary:#ff4d6d,secondary:#ff9eb5"
-            style="width:120px;height:120px">
-        </lord-icon>
-    </div>
+    <div class="characters">🐻💖🐰</div>
 
-    <h2 id="question1">i have something to say for you, are you ready?</h2>
+    <h2 id="question">i have something to say for you, are you ready?</h2>
 
-    <div class="buttons showBtn" id="btn1">
+    <div class="buttons" id="btn1">
         <button class="yes" id="yes1">Yes</button>
         <button class="no" id="no1">No</button>
     </div>
-</div>
 
-<!-- STATE 2 ELEMENTS -->
-<lord-icon class="bouquet" id="bouquet1" src="https://cdn.lordicon.com/eaxiadjd.json" trigger="loop" colors="primary:#ff4d6d,secondary:#ffb6c1,tertiary:#ffd6e0" style="width:200px;height:200px"></lord-icon>
+    <div class="text" id="msg1"></div>
+    <div class="text" id="msg2"></div>
 
-<!-- STATE 3 -->
-<div class="stateContainer" id="state3" style="display:none;">
-    <div class="kissWrap" id="char3">
-        <lord-icon
-            src="https://cdn.lordicon.com/xyboiuok.json"
-            trigger="loop"
-            colors="primary:#ff4d6d,secondary:#ff9eb5"
-            style="width:120px;height:120px">
-        </lord-icon>
+    <div class="buttons2" id="btn2">
+        <button class="yes" id="yes2">Yes</button>
+        <button class="no" id="no2">No</button>
     </div>
 
-    <h2 id="question3">[TULIS TEXT STATE 3 DI SINI]</h2>
+    <div class="text" id="msg3"></div>
 
-    <div class="buttons showBtn" id="btn3">
-        <button class="yes" id="yes3">Yes</button>
-        <button class="no" id="no3">No</button>
-    </div>
 </div>
 
 <script>
 const music = document.getElementById("bgMusic");
 
-// ✅ PERFECT 4 POJOK - LAPTOP & MOBILE
-function getButtonCorners() {
-    const btnWidth = 100;  // Approximate button width
-    const btnHeight = 50;  // Approximate button height
-    const margin = 10;
-    
-    return [
-        // 🔥 POJOK KIRI ATAS
-        {left: `${margin}px`, top: `${margin}px`},
-        
-        // 🔥 POJOK KANAN ATAS  
-        {left: `calc(100vw - ${btnWidth + margin}px)`, top: `${margin}px`},
-        
-        // 🔥 POJOK KANAN BAWAH
-        {left: `calc(100vw - ${btnWidth + margin}px)`, top: `calc(100vh - ${btnHeight + margin}px)`},
-        
-        // 🔥 POJOK KIRI BAWAH
-        {left: `${margin}px`, top: `calc(100vh - ${btnHeight + margin}px)`}
-    ];
+// 🎵 AUDIO FIX
+function playMusic() {
+    music.load();
+    music.volume = 0.5;
+
+    let playPromise = music.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            document.addEventListener("click", () => {
+                music.play();
+            }, { once: true });
+        });
+    }
 }
 
-function moveToCorner(btn, cornerIndex) {
-    const corners = getButtonCorners();
-    const corner = corners[cornerIndex];
-    
-    // Set posisi pojok
-    btn.style.position = 'fixed';
-    btn.style.left = corner.left;
-    btn.style.top = corner.top;
-    btn.style.margin = '0';
-    btn.style.zIndex = '9999';
-    
-    // Animasi
-    btn.classList.remove('moving');
-    void btn.offsetWidth;
-    btn.classList.add('moving');
-}
+// ✨ TYPING LEBIH PELAN
+function typeWordsSmooth(element, text, delay = 250) {
+    element.style.display = "block";
+    element.innerHTML = "";
 
-function startCornerLoop(btn) {
-    let currentCorner = 0;
-    
-    const moveInterval = setInterval(() => {
-        moveToCorner(btn, currentCorner);
-        currentCorner = (currentCorner + 1) % 4;
-    }, 1000);
-    
-    return moveInterval;
-}
-
-// INIT ALL NO BUTTONS
-document.addEventListener('DOMContentLoaded', () => {
-    const noButtons = ['no1', 'no2', 'no3'];
-    noButtons.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) {
-            let loopStarted = false;
-            let intervalId;
-            
-            const startLoop = () => {
-                if (!loopStarted) {
-                    loopStarted = true;
-                    // Mulai dari pojok kiri atas
-                    moveToCorner(btn, 0);
-                    intervalId = startCornerLoop(btn);
-                }
-            };
-            
-            const stopLoop = () => {
-                if (intervalId) {
-                    clearInterval(intervalId);
-                    loopStarted = false;
-                }
-            };
-            
-            btn.addEventListener('mouseenter', startLoop);
-            btn.addEventListener('touchstart', startLoop);
-            
-            // Stop saat parent di-hide
-            const parentObserver = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                        const parent = btn.closest('.stateContainer, .buttons');
-                        if (parent && (parent.style.display === 'none' || !parent.offsetParent)) {
-                            stopLoop();
-                        }
-                    }
-                });
-            });
-            parentObserver.observe(btn.parentElement, { attributes: true });
-        }
+    const words = text.split(" ");
+    words.forEach((word, i) => {
+        const span = document.createElement("span");
+        span.classList.add("word");
+        span.style.animationDelay = (i * delay) + "ms";
+        span.textContent = word;
+        element.appendChild(span);
     });
-});
+}
 
-// STATE 1
-document.getElementById("yes1").onclick = ()=>{
+// 😈 NO TELEPORT
+function antiClick(btn) {
+    function move(e) {
+        e.preventDefault();
+
+        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+
+        btn.style.position = "fixed";
+        btn.style.left = x + "px";
+        btn.style.top = y + "px";
+    }
+
+    btn.addEventListener("mousedown", move);
+    btn.addEventListener("touchstart", move);
+    btn.addEventListener("click", move);
+}
+
+antiClick(document.getElementById("no1"));
+
+document.getElementById("yes1").onclick = () => {
+
     playMusic();
-    
-    document.getElementById("state1").style.display = "none";
-    
-    document.getElementById("bouquet1").style.opacity = "1";
-    document.getElementById("bouquet1").style.transform = "translate(-50%, -50%) scale(1)";
-    
-    // Text state 2
-    const msg1 = document.createElement("div");
-    msg1.id = "msg1";
-    msg1.className = "stateContainer";
-    msg1.style.zIndex = "15";
-    msg1.innerHTML = '<h2 id="text1" style="font-size: clamp(20px, 4vw, 28px); line-height: 1.3; max-width: 90%; margin: 0;"></h2>';
-    document.body.appendChild(msg1);
-    
-    typeWordsSmooth(document.getElementById("text1"), "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️");
-    
-    setTimeout(()=>{
-        const msg2 = document.createElement("div");
-        msg2.id = "msg2";
-        msg2.className = "stateContainer";
-        msg2.style.zIndex = "15";
-        msg2.innerHTML = '<h2 id="question2" style="font-size: clamp(20px, 4vw, 28px); line-height: 1.3; max-width: 90%; margin: 0; font-style: italic; color: #c94f7c;"></h2>';
-        document.body.appendChild(msg2);
-        
-        typeWordsSmooth(document.getElementById("question2"), "i have something else, wanna see?");
+
+    document.getElementById("question").style.display = "none";
+    document.getElementById("btn1").style.display = "none";
+
+    typeWordsSmooth(
+        document.getElementById("msg1"),
+        "you’re the prettiest, smartest, cutest girl i’ve seen i love you ❤️"
+    );
+
+    setTimeout(() => {
+        typeWordsSmooth(
+            document.getElementById("msg2"),
+            "i have something else, wanna see?"
+        );
     }, 3500);
 
-    setTimeout(()=>{
-        const btn2 = document.createElement("div");
-        btn2.id = "btn2";
-        btn2.className = "buttons showBtn";
-        btn2.innerHTML = '<button class="yes" id="yes2">Yes</button><button class="no" id="no2">No</button>';
-        btn2.style.position = "fixed";
-        btn2.style.top = "55%";
-        btn2.style.left = "50%";
-        btn2.style.transform = "translate(-50%, 0)";
-        btn2.style.zIndex = "20";
-        document.body.appendChild(btn2);
-        btn2.style.display = "flex";
+    setTimeout(() => {
+        document.getElementById("btn2").style.display = "flex";
+        antiClick(document.getElementById("no2"));
     }, 6000);
 };
 
-// STATE 2 to STATE 3
-document.addEventListener('click', function(e) {
-    if (e.target.id === 'yes2') {
-        document.getElementById("msg1")?.remove();
-        document.getElementById("msg2")?.remove();
-        document.getElementById("btn2")?.remove();
-        document.getElementById("bouquet1").style.opacity = "0";
-        document.getElementById("state3").style.display = "flex";
-    }
-});
+document.getElementById("yes2").onclick = () => {
+    document.getElementById("btn2").style.display = "none";
 
-// STATE 3
-document.getElementById("yes3").onclick = ()=>{
-    document.getElementById("question3").textContent = "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖";
+    typeWordsSmooth(
+        document.getElementById("msg3"),
+        "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖"
+    );
 };
-
-function typeWordsSmooth(el, text, delay=250){
-    el.style.display = "block";
-    el.innerHTML = "";
-    text.split(" ").forEach((w, i)=>{
-        let s = document.createElement("span");
-        s.className = "word";
-        s.style.animationDelay = (i * delay) + "ms";
-        s.textContent = w;
-        el.appendChild(s);
-    });
-}
 </script>
 
 </body>
