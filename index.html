@@ -43,23 +43,10 @@ h2 {
     font-size: 22px;
 }
 
-@keyframes fadeSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
 .buttons {
     margin-top: 20px;
     display: flex;
     gap: 15px;
-    opacity: 0;
-    animation: fadeSlideUp 0.8s ease forwards;
 }
 
 button {
@@ -68,12 +55,6 @@ button {
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-    transform: scale(1.08);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .yes {
@@ -92,6 +73,11 @@ button:hover {
     font-size: 22px;
     color: #ff2e63;
     line-height: 1.6;
+}
+
+/* ✨ WARNA KHUSUS PERTANYAAN */
+.question-text {
+    color: #6a00f4;
 }
 
 .word {
@@ -113,12 +99,6 @@ button:hover {
     display: none;
     margin-top: 15px;
     gap: 10px;
-    opacity: 0;
-}
-
-.buttons2.show {
-    display: flex;
-    animation: fadeSlideUp 0.8s ease forwards;
 }
 
 @media (max-width: 480px) {
@@ -173,9 +153,11 @@ function playMusic() {
     }
 }
 
-function typeWordsSmooth(element, text, delay = 250) {
+// ✨ TAMBAH PARAMETER CLASS
+function typeWordsSmooth(element, text, delay = 250, extraClass = "") {
     element.style.display = "block";
     element.innerHTML = "";
+    element.className = "text " + extraClass;
 
     const words = text.split(" ");
     words.forEach((word, i) => {
@@ -187,18 +169,12 @@ function typeWordsSmooth(element, text, delay = 250) {
     });
 }
 
-// ✅ FIX: BATASIN DI DALAM LAYAR
 function antiClick(btn) {
     function move(e) {
         e.preventDefault();
 
-        const padding = 20; // biar ga nempel pinggir
-
-        const maxX = window.innerWidth - btn.offsetWidth - padding;
-        const maxY = window.innerHeight - btn.offsetHeight - padding;
-
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
 
         btn.style.position = "fixed";
         btn.style.left = x + "px";
@@ -227,13 +203,14 @@ document.getElementById("yes1").onclick = () => {
     setTimeout(() => {
         typeWordsSmooth(
             document.getElementById("msg2"),
-            "i have something else, wanna see?"
+            "i have something else, wanna see?",
+            250,
+            "question-text" // ✨ warna beda
         );
     }, 3500);
 
     setTimeout(() => {
-        const btn2 = document.getElementById("btn2");
-        btn2.classList.add("show");
+        document.getElementById("btn2").style.display = "flex";
         antiClick(document.getElementById("no2"));
     }, 6000);
 };
