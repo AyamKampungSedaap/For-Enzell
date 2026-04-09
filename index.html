@@ -116,7 +116,7 @@ button {
     pointer-events: auto;
 }
 
-/* 🔥 NO BUTTON - 4 SUDUT MOVEMENT */
+/* 🔥 NO BUTTON - BENAR-BENAR 4 POJOK LAYAR */
 .no.moving {
     position: fixed !important;
     z-index: 9999 !important;
@@ -213,24 +213,24 @@ button {
 <script>
 const music = document.getElementById("bgMusic");
 
-// ✅ 4 SUDUT POSISI
+// ✅ BENAR-BENAR 4 POJOK LAYAR
 const corners = [
-    {left: '20px', top: '20px'},           // ATAS KIRI
-    {left: 'calc(100% - 120px)', top: '20px'},  // ATAS KANAN
-    {left: 'calc(100% - 120px)', top: 'calc(100% - 80px)'}, // BAWAH KANAN
-    {left: '20px', top: 'calc(100% - 80px)'}  // BAWAH KIRI
+    {left: '10px', top: '10px'},                           // 🔥 POJOK KIRI ATAS
+    {left: 'calc(100vw - 110px)', top: '10px'},            // 🔥 POJOK KANAN ATAS
+    {left: 'calc(100vw - 110px)', top: 'calc(100vh - 70px)'}, // 🔥 POJOK KANAN BAWAH
+    {left: '10px', top: 'calc(100vh - 70px)'}              // 🔥 POJOK KIRI BAWAH
 ];
 
 function moveToCorner(btn, cornerIndex) {
     const corner = corners[cornerIndex];
     
-    // Animasi smooth
+    // Langsung set posisi pojok
     btn.style.position = 'fixed';
     btn.style.left = corner.left;
     btn.style.top = corner.top;
     btn.style.zIndex = '9999';
     
-    // Trigger moving class
+    // Animasi scale
     btn.classList.remove('moving');
     void btn.offsetWidth;
     btn.classList.add('moving');
@@ -241,10 +241,10 @@ function startCornerLoop(btn) {
     
     const moveInterval = setInterval(() => {
         moveToCorner(btn, currentCorner);
-        currentCorner = (currentCorner + 1) % 4; // Loop 0-1-2-3-0-1...
-    }, 1000); // Gerak setiap 1 detik
+        currentCorner = (currentCorner + 1) % 4; // 0→1→2→3→0→1...
+    }, 1000);
     
-    // Stop jika button di-remove
+    // Stop loop saat yes di-click
     const stopLoop = () => clearInterval(moveInterval);
     btn.addEventListener('remove', stopLoop);
     document.addEventListener('yesClicked', stopLoop);
@@ -258,12 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
     noButtons.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
-            // Mulai loop saat pertama kali hover/touch
             let loopStarted = false;
             const startLoop = () => {
                 if (!loopStarted) {
                     loopStarted = true;
-                    startCornerLoop(btn);
+                    // Mulai dari pojok kiri atas
+                    moveToCorner(btn, 0);
+                    setTimeout(() => startCornerLoop(btn), 500);
                 }
             };
             
@@ -276,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // STATE 1
 document.getElementById("yes1").onclick = ()=>{
     playMusic();
+    document.dispatchEvent(new Event('yesClicked'));
     
     document.getElementById("state1").style.display = "none";
     
