@@ -28,18 +28,36 @@ body {
     align-items: center;
 }
 
-/* KARAKTER */
+/* 🔥 KARAKTER FIX (RAPI & CENTER) */
 .characters {
-    font-size: 70px;
-    animation: bounce 1.5s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 60px;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeChar 1.2s ease forwards;
 }
 
-@keyframes bounce {
-    0%,100% {transform:translateY(0);}
-    50% {transform:translateY(-12px);}
+@keyframes fadeChar {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* 🌸 FLOWER (GANTI DARI SVG) */
+/* animasi halus */
+.char {
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* 🌸 FLOWER */
 .bouquet {
     width: 200px;
     opacity: 0;
@@ -101,7 +119,6 @@ button {
         transform: translateY(0);
     }
 }
-
 </style>
 </head>
 
@@ -109,14 +126,18 @@ button {
 
 <audio id="bgMusic" src="HYBS - TipToe (Official Video).mp3" preload="auto" loop></audio>
 
-<!-- 🌸 SCRIPT LORDICON -->
 <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
 <div class="container">
 
-    <div class="characters" id="char">🐻💖🐰</div>
+    <!-- 🔥 KARAKTER BARU (RAPI) -->
+    <div class="characters" id="char">
+        <span class="char">🐻</span>
+        <span class="char">💋</span>
+        <span class="char">🐰</span>
+    </div>
 
-    <!-- 🌸 FLOWER (REPLACE SVG) -->
+    <!-- 🌸 FLOWER -->
     <lord-icon
         class="bouquet"
         id="bouquet"
@@ -154,7 +175,6 @@ function playMusic() {
     music.play().catch(()=>{});
 }
 
-// typing
 function typeWordsSmooth(el,text,delay=250){
     el.style.display="block";
     el.innerHTML="";
@@ -167,7 +187,6 @@ function typeWordsSmooth(el,text,delay=250){
     });
 }
 
-// tombol kabur klik
 function antiClick(btn){
     btn.addEventListener("click",(e)=>{
         e.preventDefault();
