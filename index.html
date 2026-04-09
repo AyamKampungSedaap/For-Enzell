@@ -110,32 +110,29 @@ button {
 }
 .yes:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6); }
 
-/* 🔥 NO BUTTON - PATTERN MOVEMENT */
 .no {
     background: linear-gradient(135deg, #aaa, #ccc);
     color: white;
     pointer-events: auto;
 }
 
+/* 🔥 NO BUTTON - 4 SUDUT MOVEMENT */
 .no.moving {
     position: fixed !important;
     z-index: 9999 !important;
-    animation: slideMove 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3) !important;
+    animation: cornerMove 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
 }
 
-@keyframes slideMove {
+@keyframes cornerMove {
     0% {
-        transform: translateX(0) translateY(0) scale(1);
-        opacity: 1;
+        transform: scale(1);
     }
     50% {
-        transform: translateX(var(--move-x, 0px)) translateY(var(--move-y, 0px)) scale(1.1);
-        opacity: 0.9;
+        transform: scale(1.05);
     }
     100% {
-        transform: translateX(var(--move-x, 0px)) translateY(var(--move-y, 0px)) scale(1);
-        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -215,80 +212,65 @@ button {
 
 <script>
 const music = document.getElementById("bgMusic");
-let moveCounter = 0;
 
-function playMusic() {
-    music.load();
-    music.volume = 0.5;
-    music.play().catch(()=>{});
+// ✅ 4 SUDUT POSISI
+const corners = [
+    {left: '20px', top: '20px'},           // ATAS KIRI
+    {left: 'calc(100% - 120px)', top: '20px'},  // ATAS KANAN
+    {left: 'calc(100% - 120px)', top: 'calc(100% - 80px)'}, // BAWAH KANAN
+    {left: '20px', top: 'calc(100% - 80px)'}  // BAWAH KIRI
+];
+
+function moveToCorner(btn, cornerIndex) {
+    const corner = corners[cornerIndex];
+    
+    // Animasi smooth
+    btn.style.position = 'fixed';
+    btn.style.left = corner.left;
+    btn.style.top = corner.top;
+    btn.style.zIndex = '9999';
+    
+    // Trigger moving class
+    btn.classList.remove('moving');
+    void btn.offsetWidth;
+    btn.classList.add('moving');
 }
 
-function patternMoveNoButton(btn) {
-    const rect = btn.getBoundingClientRect();
-    const margin = 30;
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    const btnW = rect.width || 100;
-    const btnH = rect.height || 50;
+function startCornerLoop(btn) {
+    let currentCorner = 0;
     
-    // ✅ PATTERN YANG KEREN - TIDAK NGE-RANDOM KE YES
-    const patterns = [
-        // 4 Sudut layar
-        {x: margin, y: margin},                    // Top-left
-        {x: screenW - btnW - margin, y: margin},   // Top-right  
-        {x: screenW - btnW - margin, y: screenH - btnH - margin}, // Bottom-right
-        {x: margin, y: screenH - btnH - margin},   // Bottom-left
-        
-        // Tengah sisi
-        {x: screenW/2 - btnW/2, y: margin},                    // Top center
-        {x: screenW - btnW - margin, y: screenH/2 - btnH/2},   // Right center
-        {x: screenW/2 - btnW/2, y: screenH - btnH - margin},   // Bottom center
-        {x: margin, y: screenH/2 - btnH/2},                    // Left center
-        
-        // Diagonal
-        {x: screenW * 0.2, y: screenH * 0.2},
-        {x: screenW * 0.8, y: screenH * 0.8},
-        {x: screenW * 0.8, y: screenH * 0.2},
-        {x: screenW * 0.2, y: screenH * 0.8}
-    ];
+    const moveInterval = setInterval(() => {
+        moveToCorner(btn, currentCorner);
+        currentCorner = (currentCorner + 1) % 4; // Loop 0-1-2-3-0-1...
+    }, 1000); // Gerak setiap 1 detik
     
-    // Pilih pattern berdasarkan counter (kelihatan acak)
-    const patternIndex = moveCounter % patterns.length;
-    const targetPos = patterns[patternIndex];
+    // Stop jika button di-remove
+    const stopLoop = () => clearInterval(moveInterval);
+    btn.addEventListener('remove', stopLoop);
+    document.addEventListener('yesClicked', stopLoop);
     
-    moveCounter++;
-    
-    // Set CSS variables untuk animasi
-    btn.style.setProperty('--move-x', `${targetPos.x - rect.left}px`);
-    btn.style.setProperty('--move-y', `${targetPos.y - rect.top}px`);
-    
-    // Trigger animasi
-    btn.classList.remove('moving');
-    void btn.offsetWidth; // Trigger reflow
-    btn.classList.add('moving');
-    
-    // Pindah posisi setelah animasi
-    setTimeout(() => {
-        btn.style.position = 'fixed';
-        btn.style.left = targetPos.x + 'px';
-        btn.style.top = targetPos.y + 'px';
-        btn.style.zIndex = '9999';
-    }, 300);
-    
-    // Loop pattern
-    setTimeout(() => {
-        patternMoveNoButton(btn);
-    }, 800);
+    return moveInterval;
 }
 
 // INIT ALL NO BUTTONS
-const noButtons = ['no1', 'no2', 'no3'];
-noButtons.forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) {
-        btn.addEventListener('mouseenter', () => patternMoveNoButton(btn));
-        btn.addEventListener('touchstart', () => patternMoveNoButton(btn));
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const noButtons = ['no1', 'no2', 'no3'];
+    noButtons.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            // Mulai loop saat pertama kali hover/touch
+            let loopStarted = false;
+            const startLoop = () => {
+                if (!loopStarted) {
+                    loopStarted = true;
+                    startCornerLoop(btn);
+                }
+            };
+            
+            btn.addEventListener('mouseenter', startLoop);
+            btn.addEventListener('touchstart', startLoop);
+        }
+    });
 });
 
 // STATE 1
@@ -339,6 +321,7 @@ document.getElementById("yes1").onclick = ()=>{
 // STATE 2 to STATE 3
 document.addEventListener('click', function(e) {
     if (e.target.id === 'yes2') {
+        document.dispatchEvent(new Event('yesClicked'));
         document.getElementById("msg1")?.remove();
         document.getElementById("msg2")?.remove();
         document.getElementById("btn2")?.remove();
@@ -351,6 +334,18 @@ document.addEventListener('click', function(e) {
 document.getElementById("yes3").onclick = ()=>{
     document.getElementById("question3").textContent = "You're amazing babe, you've done your best and im proud of you. Keep it up pwitiee, i'll always be there for you 💖";
 };
+
+function typeWordsSmooth(el, text, delay=250){
+    el.style.display = "block";
+    el.innerHTML = "";
+    text.split(" ").forEach((w, i)=>{
+        let s = document.createElement("span");
+        s.className = "word";
+        s.style.animationDelay = (i * delay) + "ms";
+        s.textContent = w;
+        el.appendChild(s);
+    });
+}
 </script>
 
 </body>
