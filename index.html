@@ -12,6 +12,7 @@ html, body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
+    user-select: none; /* Prevent text selection */
 }
 
 body {
@@ -36,6 +37,7 @@ body {
     max-width: 400px;
     padding: 20px;
     box-sizing: border-box;
+    z-index: 10;
 }
 
 /* 💋 KISS */
@@ -68,7 +70,7 @@ body {
     max-width: 90%;
 }
 
-/* BUTTON */
+/* BUTTON - NORMAL */
 .buttons, .buttons2 {
     display: flex;
     gap: 12px;
@@ -96,31 +98,55 @@ button {
     font-size: 16px;
     font-weight: 500;
     min-width: 80px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 20;
 }
 
 .yes { 
     background: linear-gradient(135deg, #ff4d6d, #ff6b9d);
     color: white;
-    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
-    transition: all 0.3s ease;
 }
 .yes:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6); }
 .no { 
     background: linear-gradient(135deg, #aaa, #ccc);
     color: white;
-    transition: all 0.3s ease;
 }
 .no:hover { transform: translateY(-2px); }
+
+/* 🔥 NO BUTTON RANDOM POSITION */
+.noButtonRandom {
+    position: fixed !important;
+    z-index: 9999 !important;
+    animation: bounceIn 0.3s ease-out;
+    pointer-events: auto;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.8) rotate(-10deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
 
 /* 🌸 FLOWER */
 .bouquet {
     width: 200px;
     opacity: 0;
     transition: opacity 1s ease, transform 1s ease;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
+    z-index: 5;
 }
 
 /* TEXT */
@@ -130,6 +156,12 @@ button {
     line-height: 1.6;
     max-width: 90%;
     margin: 0 auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 5;
 }
 
 .mainText { color:#ff2e63; }
@@ -160,6 +192,11 @@ button {
     button {
         padding: 10px 20px;
         font-size: 15px;
+        min-width: 70px;
+    }
+    .noButtonRandom {
+        padding: 10px 18px !important;
+        font-size: 14px !important;
     }
 }
 </style>
@@ -229,22 +266,48 @@ function typeWordsSmooth(el, text, delay=250){
     });
 }
 
-function antiClick(btn){
-    btn.addEventListener("mouseover", ()=>{
-        const margin = 10;
-        const maxX = window.innerWidth - btn.offsetWidth - margin;
-        const maxY = window.innerHeight - btn.offsetHeight - margin;
-
-        btn.style.position = "fixed";
-        btn.style.left = (Math.random() * maxX + margin) + "px";
-        btn.style.top = (Math.random() * maxY + margin) + "px";
-        btn.style.zIndex = "9999";
-    });
+function moveNoButtonRandom(btn) {
+    // Hapus event listener sebelumnya agar tidak stack
+    btn.removeEventListener('mouseover', btn.randomMoveHandler);
+    
+    // Buat fungsi baru untuk event handler
+    btn.randomMoveHandler = function() {
+        const margin = 15;
+        const btnRect = btn.getBoundingClientRect();
+        const btnWidth = btnRect.width;
+        const btnHeight = btnRect.height;
+        
+        const maxX = window.innerWidth - btnWidth - margin;
+        const maxY = window.innerHeight - btnHeight - margin;
+        
+        // Posisi random dengan bounce animation
+        const randomX = Math.random() * maxX + margin;
+        const randomY = Math.random() * maxY + margin;
+        
+        btn.style.left = randomX + "px";
+        btn.style.top = randomY + "px";
+        btn.style.transform = "scale(1.05)";
+        btn.classList.add("noButtonRandom");
+        
+        // Reset scale setelah animasi
+        setTimeout(() => {
+            btn.style.transform = "scale(1)";
+        }, 300);
+        
+        // Langsung attach ulang event handler
+        setTimeout(() => {
+            moveNoButtonRandom(btn);
+        }, 50);
+    };
+    
+    // Attach event handler
+    btn.addEventListener('mouseover', btn.randomMoveHandler);
+    btn.addEventListener('touchstart', btn.randomMoveHandler); // Untuk mobile
 }
 
 // Anti-click untuk tombol No pertama
 const no1 = document.getElementById("no1");
-antiClick(no1);
+moveNoButtonRandom(no1);
 
 document.getElementById("yes1").onclick = ()=>{
     playMusic();
@@ -271,10 +334,16 @@ document.getElementById("yes1").onclick = ()=>{
 
     setTimeout(()=>{
         const btn2 = document.getElementById("btn2");
+        btn2.style.position = "fixed";
+        btn2.style.top = "60%";
+        btn2.style.left = "50%";
+        btn2.style.transform = "translate(-50%, -50%)";
         btn2.style.display = "flex";
+        btn2.style.zIndex = "15";
         btn2.classList.add("showBtn");
+        
         const no2 = document.getElementById("no2");
-        antiClick(no2);
+        moveNoButtonRandom(no2);
     }, 6000);
 };
 
